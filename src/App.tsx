@@ -284,7 +284,7 @@ function ViewScript() {
                 Download
               </button>
               <a 
-                href={`/scripts/${fileName}`}
+                href={`/raw/${fileName}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary w-full flex items-center justify-center gap-2 text-[11px] font-bold tracking-tight"
