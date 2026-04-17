@@ -1,7 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/(raw/.*)",
+      "source": "/raw/(.*)",
+      "destination": "/scripts/$1"
+    },
+    {
+      "source": "/(scripts/.*)",
       "destination": "/$1"
     },
     {
