@@ -52,5 +52,14 @@
   "language": "JavaScript",
   "author": "Givy",
   "date": "2026-04-18"
+},
+  {
+  "id": "7",
+  "name": "Acode Plugin",
+  "fileName": "acode-plugin.js",
+  "explanation": "Cari, lihat, dan ambil data plugin Acode.",
+  "language": "JavaScript",
+  "author": "Givy",
+  "date": "2026-04-18"
 }
 ]
