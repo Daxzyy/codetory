@@ -250,13 +250,13 @@ function ViewScript() {
             <h1 className="text-sm font-bold mb-0.5 break-all text-white/90">{fileName}</h1>
 
             {scriptData?.explanation && (
-              <p className="text-[10px] text-neutral-500 leading-relaxed mt-2">
+              <p className="text-[10px] text-neutral-300 leading-relaxed mt-2">
                 {scriptData.explanation}
               </p>
             )}
 
             {!loading && code && (
-              <p className="text-[9px] text-neutral-600 font-mono tracking-tight mt-3">
+              <p className="text-[9px] text-neutral-400 font-mono tracking-tight mt-3">
                 {new Blob([code]).size.toLocaleString()} bytes
                 {scriptData?.date && (
                   <> · {new Date(scriptData.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</>
