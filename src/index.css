@@ -3,7 +3,7 @@
 
 @theme {
   --color-brand: #ffffff;
-  --color-bg: #0a0a0a;
+  --color-bg: #1a1a1a;
   --font-mono: "JetBrains Mono", "Fira Code", "Courier New", monospace;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-pixel: "Pixelify Sans", system-ui, sans-serif;
@@ -12,14 +12,48 @@
   --radius-xl: 0.75rem;
 }
 
+@keyframes starfield {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
 @layer base {
   body {
     @apply bg-bg text-neutral-200 font-sans antialiased selection:bg-white selection:text-black;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
     background-image: 
-      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 32px 32px;
-    background-attachment: fixed;
+      radial-gradient(2px 2px at 20% 30%, white, transparent),
+      radial-gradient(2px 2px at 60% 70%, white, transparent),
+      radial-gradient(1px 1px at 50% 50%, white, transparent),
+      radial-gradient(1px 1px at 80% 10%, white, transparent),
+      radial-gradient(2px 2px at 90% 60%, white, transparent),
+      radial-gradient(1px 1px at 33% 80%, white, transparent),
+      radial-gradient(1px 1px at 15% 45%, white, transparent);
+    background-size: 200px 200px, 300px 300px, 250px 250px, 350px 350px, 400px 400px, 280px 280px, 320px 320px;
+    background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 150px 50px, 200px 180px, 90px 220px;
+    animation: starfield 120s linear infinite;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  body > * {
+    position: relative;
+    z-index: 1;
   }
 }
 
