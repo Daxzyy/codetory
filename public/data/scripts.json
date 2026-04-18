@@ -43,5 +43,14 @@
   "language": "JavaScript",
   "author": "Givy",
   "date": "2026-04-18"
-  }
+  },
+  {
+  "id": "6",
+  "name": "Calorie Checker",
+  "fileName": "calories.js",
+  "explanation": "Cek kalori makanan dari gambar",
+  "language": "JavaScript",
+  "author": "Givy",
+  "date": "2026-04-18"
+}
 ]
