@@ -17,22 +17,20 @@ import {
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-// --- Components ---
-
 function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 h-12 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-1.5 group">
-          <div className="p-0.5 border border-white/10 bg-white/5 transition-colors group-hover:border-white/20">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="p-1.5 border border-white/10 bg-white/5 transition-colors group-hover:border-white/20">
             <img 
               src="/icon.png" 
-              className="w-4 h-4 invert grayscale brightness-200" 
+              className="w-8 h-8 invert grayscale brightness-200" 
               alt="Scraptory Logo" 
               referrerPolicy="no-referrer"
             />
           </div>
-          <span className="text-sm font-bold tracking-tight text-white uppercase font-pixel decoration-none">
+          <span className="text-lg font-bold tracking-tight text-white uppercase font-pixel decoration-none">
             Scraptory
           </span>
         </Link>
@@ -40,8 +38,6 @@ function Navbar() {
     </nav>
   );
 }
-
-// --- Pages ---
 
 function Home() {
   interface Script {
@@ -354,8 +350,6 @@ function ViewScript() {
     </div>
   );
 }
-
-// --- Layout & App ---
 
 function ScrollToTop() {
   const { pathname } = useLocation();
