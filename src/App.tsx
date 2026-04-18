@@ -10,13 +10,12 @@ import {
   Download, 
   ExternalLink, 
   Check, 
-  Terminal,
   FileCode,
   Github,
   ChevronRight
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function Navbar() {
   return (
@@ -31,7 +30,7 @@ function Navbar() {
               referrerPolicy="no-referrer"
             />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white uppercase font-pixel decoration-none">
+          <span style={{ fontFamily: "'Martian Mono', monospace", fontWeight: 700, letterSpacing: '0.05em' }} className="text-xl text-white uppercase decoration-none">
             Scraptory
           </span>
         </Link>
@@ -295,19 +294,16 @@ function ViewScript() {
             </motion.div>
           )}
 
-          <div className="border border-white/10 bg-black overflow-hidden">
-            <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.03] border-b border-white/5">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                </div>
-                <span className="text-[9px] font-mono text-neutral-500 ml-2 hidden md:inline tracking-tight">
-                  {fileName} — {loading ? "..." : `${code.split('\n').length} lines`}
-                </span>
+          <div className="border border-white/10 overflow-hidden" style={{ background: '#0d0d0d' }}>
+            <div className="flex items-center px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
+              <div className="flex gap-1 mr-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
               </div>
-              <Terminal className="w-3 h-3 text-white/20" />
+              <span className="text-[9px] font-mono text-neutral-500 hidden md:inline tracking-tight">
+                {fileName} — {loading ? "..." : `${code.split('\n').length} lines`}
+              </span>
             </div>
 
             <div className="relative">
@@ -321,7 +317,7 @@ function ViewScript() {
                 <div className="text-[11px] font-mono scrollbar-thin scrollbar-thumb-white/10 overflow-hidden">
                   <SyntaxHighlighter
                     language={scriptData?.language?.toLowerCase() || "javascript"}
-                    style={vscDarkPlus}
+                    style={oneDark}
                     customStyle={{
                       margin: 0,
                       padding: '1rem',
