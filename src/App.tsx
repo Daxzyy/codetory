@@ -269,7 +269,7 @@ function ViewScript() {
                   href={`/raw/${fileName}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white hover:bg-white/5 transition-all text-[10px] font-bold tracking-tight"
+                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Raw
@@ -277,7 +277,7 @@ function ViewScript() {
                 <span className="text-white/10 text-xs">|</span>
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white hover:bg-white/5 transition-all text-[10px] font-bold tracking-tight"
+                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight"
                 >
                   {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3" />}
                   {copied ? "Copied" : "Copy"}
@@ -285,7 +285,7 @@ function ViewScript() {
                 <span className="text-white/10 text-xs">|</span>
                 <button
                   onClick={handleDownload}
-                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white hover:bg-white/5 transition-all text-[10px] font-bold tracking-tight"
+                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight"
                 >
                   <Download className="w-3 h-3" />
                   Download
