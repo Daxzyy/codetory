@@ -136,14 +136,17 @@ function Home() {
                     <div className="p-1 border border-white/10 bg-white/5 flex-shrink-0">
                       <FileCode className="w-4 h-4 text-white/40 group-hover:text-white/80" />
                     </div>
-                    <div className="flex items-center gap-2 overflow-hidden flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 overflow-hidden flex-1 min-w-0">
                       <h3 className="text-sm font-bold truncate text-white/80 group-hover:text-white tracking-tight">
                         {script.name}
                       </h3>
                       {script.date && (
-                        <span className="text-[9px] font-mono text-neutral-400 flex-shrink-0">
-                          {new Date(script.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        </span>
+                        <>
+                          <span className="text-neutral-600 text-[10px] flex-shrink-0">·</span>
+                          <span className="text-[9px] font-mono text-neutral-400 flex-shrink-0">
+                            {new Date(script.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                        </>
                       )}
                     </div>
                   </div>
