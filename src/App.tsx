@@ -73,26 +73,26 @@ function Home() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
         <motion.div
            initial={{ opacity: 0, x: -10 }}
            animate={{ opacity: 1, x: 0 }}
         >
-          <h1 className="text-base font-bold tracking-tight mb-0.5 text-white font-pixel">
+          <h1 className="text-2xl font-bold tracking-tight mb-1 text-white font-pixel">
             Scraptory <span className="text-white/10">/</span>
           </h1>
-          <p className="text-neutral-500 text-[10px] max-w-md leading-tight font-lexend tracking-tight">
+          <p className="text-neutral-400 text-sm max-w-md leading-relaxed font-lexend tracking-tight">
             A collection of curated scraping scripts for developers and data enthusiasts.
           </p>
         </motion.div>
 
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/20" />
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
           <input
             type="text"
             placeholder="Search archive..."
-            className="w-full bg-white/5 border border-white/10 rounded-none pl-8 pr-4 py-1.5 text-[10px] focus:outline-none focus:border-white/30 transition-all shadow-inner"
+            className="w-full bg-white/5 border border-white/10 rounded-none pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-white/30 transition-all shadow-inner"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -100,14 +100,14 @@ function Home() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-28 border border-white/5 bg-white/5 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-44 border border-white/5 bg-white/5 animate-pulse" />
           ))}
         </div>
       ) : (
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           initial="hidden"
           animate="visible"
           variants={{
@@ -127,34 +127,34 @@ function Home() {
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0 }
               }}
-              className="group border border-white/10 bg-white/[0.02] p-3 flex flex-col justify-between hover:bg-white/[0.05] hover:border-white/30 transition-all duration-300"
+              className="group border border-white/10 bg-white/[0.02] p-5 flex flex-col justify-between hover:bg-white/[0.05] hover:border-white/30 transition-all duration-300"
             >
               <div>
-                <div className="flex justify-between items-start mb-2">
-                  <div className="flex items-center gap-2 overflow-hidden flex-1">
-                    <div className="p-0.5 border border-white/10 bg-white/5 flex-shrink-0">
-                      <FileCode className="w-3 h-3 text-white/40 group-hover:text-white/80" />
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-2.5 overflow-hidden flex-1">
+                    <div className="p-1 border border-white/10 bg-white/5 flex-shrink-0">
+                      <FileCode className="w-5 h-5 text-white/40 group-hover:text-white/80" />
                     </div>
-                    <h3 className="text-xs font-bold truncate text-white/80 group-hover:text-white tracking-tight">
+                    <h3 className="text-base font-bold truncate text-white/80 group-hover:text-white tracking-tight">
                       {script.name}
                     </h3>
                   </div>
-                  <span className="text-[8px] font-mono border border-white/5 px-1 py-0.5 bg-white/5 opacity-40 flex-shrink-0 uppercase ml-2">
+                  <span className="text-xs font-mono border border-white/5 px-2 py-1 bg-white/5 opacity-40 flex-shrink-0 uppercase ml-2">
                     {script.language}
                   </span>
                 </div>
-                <p className="text-[10px] text-neutral-500 line-clamp-2 mb-2 leading-relaxed tracking-tight">
+                <p className="text-sm text-neutral-400 line-clamp-3 mb-3 leading-relaxed tracking-tight">
                   {script.description}
                 </p>
               </div>
 
-              <div className="flex items-center justify-end mt-auto pt-2 border-t border-white/5">
+              <div className="flex items-center justify-end mt-auto pt-3 border-t border-white/5">
                 <Link
                   to={`/view/${script.fileName}`}
-                  className="text-neutral-500 hover:text-white transition-all flex items-center gap-1 text-[9px] font-medium uppercase tracking-wider"
+                  className="text-neutral-400 hover:text-white transition-all flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider"
                 >
-                  <span>View</span>
-                  <ChevronRight className="w-3 h-3" />
+                  <span>View Script</span>
+                  <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
             </motion.div>
@@ -164,7 +164,7 @@ function Home() {
 
       {!loading && filteredScripts.length === 0 && (
         <div className="text-center py-24 border border-dashed border-white/10 rounded-2xl">
-          <p className="text-white/30 font-mono">No scripts found matching your search.</p>
+          <p className="text-white/30 font-mono text-sm">No scripts found matching your search.</p>
         </div>
       )}
     </div>
