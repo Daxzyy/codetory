@@ -6,7 +6,8 @@
     "description": "Script to upload images to catbox.moe using Axios and FormData.",
     "explanation": "Script ini berfungsi untuk mengunggah gambar ke layanan hosting Catbox. Menggunakan library Axios untuk request HTTP dan FormData untuk menyusun payload file. Script ini juga mengatur header seperti User-Agent dan Referer agar request diterima oleh server Catbox.",
     "language": "JavaScript",
-    "author": "Givy"
+    "author": "Givy",
+    "date": "2026-04-18"
   },
   {
     "id": "2",
@@ -15,6 +16,7 @@
     "description": "Script untuk bypass berbagai shortlink atau proteksi URL menggunakan API.",
     "explanation": "Script ini digunakan untuk melewati (bypass) berbagai jenis shortlink atau proteksi URL dengan bantuan API eksternal. Biasanya memanfaatkan fetch atau Axios untuk mengirim request ke endpoint bypass, lalu mengambil hasil link asli dari response JSON.",
     "language": "JavaScript",
-    "author": "Givy"
+    "author": "Givy",
+    "date": "2026-04-18"
   }
 ]
