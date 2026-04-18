@@ -260,16 +260,9 @@ function ViewScript() {
         <div className="lg:w-4/5">
           <div className="border border-white/10 overflow-hidden" style={{ background: '#161616' }}>
             <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
-              <div className="flex items-center gap-3">
-                <div className="flex gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                </div>
-                <span className="text-[9px] font-mono text-neutral-500 hidden md:inline tracking-tight">
-                  {fileName} — {loading ? "..." : `${code.split('\n').length} lines`}
-                </span>
-              </div>
+              <span className="text-[9px] font-mono text-neutral-500 tracking-tight">
+                {fileName} — {loading ? "..." : `${code.split('\n').length} lines`}
+              </span>
 
               <div className="flex items-center gap-0">
                 <a
