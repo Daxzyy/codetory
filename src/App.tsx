@@ -146,14 +146,14 @@ function Home() {
                 </div>
                 
                 <div className="flex items-start justify-between gap-3 flex-1">
-                  <p className="text-xs text-neutral-400 line-clamp-3 leading-relaxed tracking-tight flex-1">
-                    {script.explanation}
+                  <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1">
+                    {script.explanation.length > 45 ? script.explanation.slice(0, 45) + '...' : script.explanation}
                   </p>
                   <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-white transition-all flex-shrink-0 mt-0.5" />
                 </div>
 
                 {script.date && (
-                  <p className="text-[9px] font-mono text-neutral-600 mt-3 pt-3 border-t border-white/5">
+                  <p className="text-[9px] font-mono text-neutral-400 mt-3 pt-3 border-t border-white/5">
                     {new Date(script.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 )}
@@ -258,7 +258,7 @@ function ViewScript() {
             <h1 className="text-sm font-bold mb-0.5 break-all text-white/90">{fileName}</h1>
 
             {scriptData?.explanation && (
-              <p className="text-[10px] text-neutral-300 leading-relaxed mt-2">
+              <p className="text-[10px] text-neutral-300 font-medium leading-relaxed mt-2">
                 {scriptData.explanation}
               </p>
             )}
