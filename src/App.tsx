@@ -254,6 +254,15 @@ function ViewScript() {
                 {scriptData.explanation}
               </p>
             )}
+
+            {!loading && code && (
+              <p className="text-[9px] text-neutral-600 font-mono tracking-tight mt-3">
+                {new Blob([code]).size.toLocaleString()} bytes
+                {scriptData?.date && (
+                  <> · {new Date(scriptData.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</>
+                )}
+              </p>
+            )}
           </motion.div>
         </div>
 
@@ -261,7 +270,7 @@ function ViewScript() {
           <div className="border border-white/10 overflow-hidden" style={{ background: '#161616' }}>
             <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
               <span className="text-[9px] font-mono text-neutral-500 tracking-tight">
-{loading ? "..." : `${code.split('\n').length} lines`}
+                {loading ? "..." : `${code.split('\n').length} lines`}
               </span>
 
               <div className="flex items-center gap-0">
