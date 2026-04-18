@@ -61,5 +61,14 @@
   "language": "JavaScript",
   "author": "Givy",
   "date": "2026-04-18"
+},
+  {
+  "id": "8",
+  "name": "Alight Motion",
+  "fileName": "alight-motion.js",
+  "explanation": "Login, ambil metadata, dan download preset Alight Motion.",
+  "language": "JavaScript",
+  "author": "Givy",
+  "date": "2026-04-18"
 }
 ]
