@@ -80,7 +80,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/data/scripts.json")
+    fetch("https://raw.githubusercontent.com/Daxzyy/codetory/main/public/data/scripts.json")
       .then((res) => res.json())
       .then((data) => {
         setScripts(data);
@@ -208,18 +208,16 @@ function ViewScript() {
 
     setLoading(true);
 
-    const fetchMetadata = fetch("/data/scripts.json")
+    const fetchMetadata = fetch("https://raw.githubusercontent.com/Daxzyy/codetory/main/public/data/scripts.json")
       .then(res => res.json())
       .then(data => {
         const script = data.find((s: any) => s.fileName === fileName);
         setScriptData(script);
       });
 
-    const fetchCode = fetch(`/scripts/${fileName}`)
+    const fetchCode = fetch(`https://raw.githubusercontent.com/Daxzyy/codetory/main/public/scripts/${fileName}`)
       .then((res) => {
         if (!res.ok) throw new Error("Script not found");
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('text/html')) throw new Error("Script not found");
         return res.text();
       });
 
