@@ -5,9 +5,9 @@
   --color-brand: #ffffff;
   --color-bg: #1f1f1f;
   --font-mono: "JetBrains Mono", "Fira Code", "Courier New", monospace;
-  --font-sans: "Manrope", "Inter", system-ui, sans-serif;
+  --font-sans: "Manrope", "Inter", system-ui, "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
   --font-pixel: "Pixelify Sans", system-ui, sans-serif;
-  --font-lexend: "Lexend", system-ui, sans-serif;
+  --font-lexend: "Lexend", system-ui, "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
 }
