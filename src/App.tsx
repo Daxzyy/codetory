@@ -297,7 +297,7 @@ function ViewScript() {
         </div>
 
         <div className="lg:w-4/5">
-          <div className="border border-white/10 overflow-hidden" style={{ background: '#161616' }}>
+          <div className="border border-white/10 rounded-lg overflow-hidden" style={{ background: '#161616' }}>
             <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
               <span className="text-[9px] font-mono text-neutral-500 tracking-tight">
                 {loading ? "..." : `${code.split('\n').length} lines`}
