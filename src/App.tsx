@@ -152,8 +152,8 @@ function Home() {
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                    <div className="p-1 border border-white/10 bg-white/5 flex-shrink-0">
-                      <LangIcon language={script.language} className="w-4 h-4" />
+                    <div className="p-0.5 border border-white/10 bg-white/5 flex-shrink-0">
+                      <LangIcon language={script.language} className="w-5 h-5" />
                     </div>
                     <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                       <h3 className="text-sm font-bold text-white/80 group-hover:text-white tracking-tight leading-snug">
