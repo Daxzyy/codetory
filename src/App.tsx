@@ -371,6 +371,9 @@ function ViewScript() {
 
 function Submit() {
   const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [authed, setAuthed] = useState(false);
+  const [authError, setAuthError] = useState(false);
   const [form, setForm] = useState({
     name: "",
     fileName: "",
@@ -381,6 +384,15 @@ function Submit() {
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const handleAuth = () => {
+    if (password === import.meta.env.VITE_SUBMIT_PASSWORD) {
+      setAuthed(true);
+      setAuthError(false);
+    } else {
+      setAuthError(true);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -393,7 +405,7 @@ function Submit() {
       return;
     }
 
-    const fileName = form.fileName.endsWith(".js") || form.fileName.endsWith(".py") || form.fileName.endsWith(".ts")
+    const fileName = form.fileName.endsWith(".js") || form.fileName.endsWith(".py") || form.fileName.endsWith(".ts") || form.fileName.endsWith(".json")
       ? form.fileName
       : `${form.fileName}.js`;
 
@@ -425,92 +437,120 @@ function Submit() {
         back to home
       </Link>
 
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-lg font-bold text-white mb-1 font-pixel">Add Script</h1>
-        <p className="text-neutral-400 text-xs mb-6 font-lexend">Tambah script baru ke Codetory</p>
-
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Name</label>
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Catbox Uploader"
-              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
-            <input
-              name="fileName"
-              value={form.fileName}
-              onChange={handleChange}
-              placeholder="catbox.js"
-              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Language</label>
-            <select
-              name="language"
-              value={form.language}
-              onChange={handleChange}
-              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
-            >
-              <option value="JavaScript">JavaScript</option>
-              <option value="TypeScript">TypeScript</option>
-              <option value="Python">Python</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
-            <textarea
-              name="explanation"
-              value={form.explanation}
-              onChange={handleChange}
-              placeholder="Script ini berfungsi untuk..."
-              rows={3}
-              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all resize-none"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Code</label>
-            <textarea
-              name="code"
-              value={form.code}
-              onChange={handleChange}
-              placeholder="const x = ..."
-              rows={12}
-              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none"
-            />
-          </div>
-
-          {status === "error" && (
-            <p className="text-red-400 text-xs font-mono">{errorMsg}</p>
-          )}
-
-          {status === "success" && (
-            <p className="text-green-400 text-xs font-mono">Script berhasil ditambahkan! Redirecting...</p>
-          )}
-
+      {!authed ? (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4 max-w-xs">
+          <h1 className="text-lg font-bold text-white font-pixel">Password</h1>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleAuth()}
+            placeholder="Enter password..."
+            className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+          />
+          {authError && <p className="text-red-400 text-xs font-mono">Wrong password.</p>}
           <button
-            onClick={handleSubmit}
-            disabled={status === "loading" || status === "success"}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleAuth}
+            className="px-4 py-2 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all"
           >
-            {status === "loading" ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
-            ) : (
-              <><Plus className="w-4 h-4" /> Submit Script</>
-            )}
+            Enter
           </button>
-        </div>
-      </motion.div>
+        </motion.div>
+      ) : (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-lg font-bold text-white mb-1 font-pixel">Add Script</h1>
+          <p className="text-neutral-400 text-xs mb-6 font-lexend">Tambah script baru ke Codetory</p>
+
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Name</label>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Catbox Uploader"
+                className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
+              <input
+                name="fileName"
+                value={form.fileName}
+                onChange={handleChange}
+                placeholder="catbox.js"
+                className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Language</label>
+              <div className="relative">
+                <select
+                  name="language"
+                  value={form.language}
+                  onChange={handleChange}
+                  className="w-full appearance-none bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all pr-8"
+                >
+                  <option value="JavaScript">JavaScript</option>
+                  <option value="Python">Python</option>
+                  <option value="JSON">JSON</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                  <svg className="w-3 h-3 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
+              <textarea
+                name="explanation"
+                value={form.explanation}
+                onChange={handleChange}
+                placeholder="Script ini berfungsi untuk..."
+                rows={3}
+                className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all resize-none"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Code</label>
+              <textarea
+                name="code"
+                value={form.code}
+                onChange={handleChange}
+                placeholder="const x = ..."
+                rows={12}
+                className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none"
+              />
+            </div>
+
+            {status === "error" && (
+              <p className="text-red-400 text-xs font-mono">{errorMsg}</p>
+            )}
+
+            {status === "success" && (
+              <p className="text-green-400 text-xs font-mono">Script berhasil ditambahkan! Redirecting...</p>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              disabled={status === "loading" || status === "success"}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {status === "loading" ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
+              ) : (
+                <><Plus className="w-4 h-4" /> Submit Script</>
+              )}
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
