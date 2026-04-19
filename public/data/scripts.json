@@ -106,14 +106,5 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-04-19"
-  },
-  {
-    "id": "13",
-    "name": "Upscale Image",
-    "fileName": "imglarger.js",
-    "explanation": "Upscale, enhance, or sharpen images using ImgLarger.",
-    "language": "JavaScript",
-    "author": "Givy",
-    "date": "2026-04-19"
   }
 ]
