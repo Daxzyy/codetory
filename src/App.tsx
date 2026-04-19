@@ -34,13 +34,13 @@ function Navbar() {
             <img
               src="/icon.png"
               className="w-9 h-9 rounded-md select-none pointer-events-none"
-              alt="Codetory Logo"
+              alt="Scraptory Logo"
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}
             />
           </div>
           <span style={{ fontFamily: "'Martian Mono', monospace", fontWeight: 700, letterSpacing: '0.05em' }} className="text-xl text-white uppercase decoration-none">
-            Codetory
+            Scraptory
           </span>
         </Link>
       </div>
@@ -89,7 +89,7 @@ function Home() {
            animate={{ opacity: 1, x: 0 }}
         >
           <h1 className="text-xl font-bold tracking-tight mb-1 text-white font-pixel">
-            Codetory <span className="text-white/10">/</span>
+            Scraptory <span className="text-white/10">/</span>
           </h1>
           <p className="text-neutral-400 text-sm max-w-md leading-relaxed font-lexend tracking-tight">
             a collection of snippets, scripts, and tools for personal projects
@@ -290,7 +290,7 @@ function ViewScript() {
               </span>
 
               <div className="flex items-center gap-0">
-                
+                <a
                   href={`/raw/${fileName}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -372,7 +372,7 @@ function MainLayout({ children }: { children: ReactNode }) {
       </div>
       <footer className="border-t border-white/5 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-neutral-500 text-xs font-medium">
-          <p>© 2026 Codetory</p>
+          <p>© 2026 Scraptory</p>
           <p>Built by <span className="text-neutral-300">Givy</span></p>
         </div>
       </footer>
