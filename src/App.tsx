@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { 
   Search, 
   ArrowLeft, 
@@ -19,12 +19,13 @@ function Navbar() {
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="p-1.5 border border-white/10 bg-white transition-colors group-hover:border-white/20">
-            <img 
-              src="/icon.png" 
-              className="w-7 h-7" 
-              alt="Scraptory Logo" 
-              referrerPolicy="no-referrer"
+          <div className="border border-white/10 bg-white transition-colors group-hover:border-white/20 rounded-full overflow-hidden">
+            <img
+              src="/icon.png"
+              className="w-9 h-9 rounded-full select-none pointer-events-none"
+              alt="Scraptory Logo"
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
           <span style={{ fontFamily: "'Martian Mono', monospace", fontWeight: 700, letterSpacing: '0.05em' }} className="text-xl text-white uppercase decoration-none">
@@ -103,7 +104,7 @@ function Home() {
           ))}
         </div>
       ) : (
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           initial="hidden"
           animate="visible"
@@ -111,18 +112,12 @@ function Home() {
             hidden: { opacity: 0 },
             visible: {
               opacity: 1,
-              transition: {
-                staggerChildren: 0.05
-              }
+              transition: { staggerChildren: 0.05 }
             }
           }}
         >
           {filteredScripts.map((script) => (
-            <Link
-              key={script.id}
-              to={`/view/${script.fileName}`}
-              className="group"
-            >
+            <Link key={script.id} to={`/view/${script.fileName}`} className="group">
               <motion.div
                 variants={{
                   hidden: { opacity: 0, y: 10 },
@@ -150,7 +145,7 @@ function Home() {
                     {script.language}
                   </span>
                 </div>
-                
+
                 <div className="flex items-start justify-between gap-3 flex-1">
                   <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1">
                     {script.explanation.length > 45 ? script.explanation.slice(0, 45) + '...' : script.explanation}
@@ -249,7 +244,7 @@ function ViewScript() {
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="lg:w-1/5">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             className="border border-white/10 bg-white/[0.02] p-4 sticky top-20"
