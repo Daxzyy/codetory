@@ -185,7 +185,7 @@ function ViewScript() {
     if (!fileName) return;
 
     setLoading(true);
-    
+
     const fetchMetadata = fetch("/data/scripts.json")
       .then(res => res.json())
       .then(data => {
@@ -196,6 +196,8 @@ function ViewScript() {
     const fetchCode = fetch(`/scripts/${fileName}`)
       .then((res) => {
         if (!res.ok) throw new Error("Script not found");
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('text/html')) throw new Error("Script not found");
         return res.text();
       });
 
