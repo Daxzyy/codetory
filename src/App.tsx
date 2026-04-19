@@ -9,7 +9,9 @@ import {
   ExternalLink, 
   Check, 
   FileCode,
-  ChevronRight
+  ChevronRight,
+  Plus,
+  Loader2
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -369,6 +371,152 @@ function ViewScript() {
   );
 }
 
+function Submit() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    fileName: "",
+    language: "JavaScript",
+    explanation: "",
+    code: "",
+    author: "Givy",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!form.name || !form.fileName || !form.code) {
+      setErrorMsg("Name, fileName, and code are required.");
+      setStatus("error");
+      return;
+    }
+
+    const fileName = form.fileName.endsWith(".js") || form.fileName.endsWith(".py") || form.fileName.endsWith(".ts")
+      ? form.fileName
+      : `${form.fileName}.js`;
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, fileName }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to submit");
+
+      setStatus("success");
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err: any) {
+      setErrorMsg(err.message);
+      setStatus("error");
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <Link to="/" className="inline-flex items-center gap-1.5 text-neutral-500 hover:text-white transition-colors mb-6 group text-[10px] font-bold uppercase tracking-wider">
+        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
+        back to home
+      </Link>
+
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="text-lg font-bold text-white mb-1 font-pixel">Add Script</h1>
+        <p className="text-neutral-400 text-xs mb-6 font-lexend">Tambah script baru ke Codetory</p>
+
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Name</label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Catbox Uploader"
+              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
+            <input
+              name="fileName"
+              value={form.fileName}
+              onChange={handleChange}
+              placeholder="catbox.js"
+              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Language</label>
+            <select
+              name="language"
+              value={form.language}
+              onChange={handleChange}
+              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+            >
+              <option value="JavaScript">JavaScript</option>
+              <option value="TypeScript">TypeScript</option>
+              <option value="Python">Python</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
+            <textarea
+              name="explanation"
+              value={form.explanation}
+              onChange={handleChange}
+              placeholder="Script ini berfungsi untuk..."
+              rows={3}
+              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all resize-none"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Code</label>
+            <textarea
+              name="code"
+              value={form.code}
+              onChange={handleChange}
+              placeholder="const x = ..."
+              rows={12}
+              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none"
+            />
+          </div>
+
+          {status === "error" && (
+            <p className="text-red-400 text-xs font-mono">{errorMsg}</p>
+          )}
+
+          {status === "success" && (
+            <p className="text-green-400 text-xs font-mono">Script berhasil ditambahkan! Redirecting...</p>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            disabled={status === "loading" || status === "success"}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {status === "loading" ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
+            ) : (
+              <><Plus className="w-4 h-4" /> Submit Script</>
+            )}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -402,6 +550,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/view/:fileName" element={<ViewScript />} />
+          <Route path="/submit" element={<Submit />} />
         </Routes>
       </MainLayout>
     </Router>
