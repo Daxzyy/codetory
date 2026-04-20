@@ -62,56 +62,14 @@ function Navbar() {
 
 function LargeFileViewer({ code, language }: { code: string; language: string }) {
   const lines = code.split('\n');
-  const totalChunks = Math.ceil(lines.length / LINES_PER_CHUNK);
-  const [selectedChunk, setSelectedChunk] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PREVIEW_LINES);
+  const isFullyExpanded = visibleCount >= lines.length;
 
-  const previewCode = lines.slice(0, PREVIEW_LINES).join('\n');
-  const isShowingChunk = selectedChunk !== null;
-
-  const chunkStart = selectedChunk !== null ? selectedChunk * LINES_PER_CHUNK : 0;
-  const chunkCode = selectedChunk !== null
-    ? lines.slice(chunkStart, chunkStart + LINES_PER_CHUNK).join('\n')
-    : previewCode;
-
-  const startLine = isShowingChunk ? chunkStart + 1 : 1;
+  const visibleCode = lines.slice(0, visibleCount).join('\n');
 
   return (
     <div>
-      <div className="flex items-center justify-between px-3 py-2 border-b border-white/5 bg-white/[0.015]">
-        <span className="text-[10px] font-mono text-yellow-400/60">
-          {isShowingChunk
-            ? `lines ${chunkStart + 1}–${Math.min(chunkStart + LINES_PER_CHUNK, lines.length)} of ${lines.length}`
-            : `preview · first ${PREVIEW_LINES} lines of ${lines.length}`}
-        </span>
-        <div className="relative">
-          <select
-            value={selectedChunk ?? "preview"}
-            onChange={e => {
-              const val = e.target.value;
-              setSelectedChunk(val === "preview" ? null : Number(val));
-            }}
-            className="appearance-none bg-white/5 border border-white/10 text-white/60 hover:text-white text-[10px] font-mono pl-2.5 pr-6 py-1 focus:outline-none focus:border-white/30 transition-all cursor-pointer"
-          >
-            <option value="preview">preview</option>
-            {Array.from({ length: totalChunks }, (_, i) => {
-              const from = i * LINES_PER_CHUNK + 1;
-              const to = Math.min((i + 1) * LINES_PER_CHUNK, lines.length);
-              return (
-                <option key={i} value={i}>
-                  lines {from}–{to}
-                </option>
-              );
-            })}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-            <svg className="w-2.5 h-2.5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div className="text-[11px] font-mono overflow-hidden relative">
+      <div className="text-[11px] font-mono overflow-hidden">
         <SyntaxHighlighter
           language={language}
           style={oneDark}
@@ -124,15 +82,22 @@ function LargeFileViewer({ code, language }: { code: string; language: string })
           }}
           codeTagProps={{ style: { fontFamily: 'inherit' } }}
           showLineNumbers
-          startingLineNumber={startLine}
+          startingLineNumber={1}
         >
-          {chunkCode}
+          {visibleCode}
         </SyntaxHighlighter>
-
-        {!isShowingChunk && (
-          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#161616] to-transparent pointer-events-none" />
-        )}
       </div>
+
+      {!isFullyExpanded && (
+        <button
+          onClick={() => setVisibleCount(c => Math.min(c + LINES_PER_CHUNK, lines.length))}
+          className="w-full flex items-center justify-center gap-2 py-2.5 border-t border-white/5 bg-white/[0.015] hover:bg-white/[0.04] text-white/30 hover:text-white/70 transition-all group"
+        >
+          <ChevronRight className="w-3.5 h-3.5 rotate-90 group-hover:translate-y-0.5 transition-transform" />
+          <span className="text-[10px] font-mono">{lines.length - visibleCount} more lines</span>
+          <ChevronRight className="w-3.5 h-3.5 rotate-90 group-hover:translate-y-0.5 transition-transform" />
+        </button>
+      )}
     </div>
   );
 }
