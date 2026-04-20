@@ -91,11 +91,9 @@ function LargeFileViewer({ code, language }: { code: string; language: string })
       {!isFullyExpanded && (
         <button
           onClick={() => setVisibleCount(c => Math.min(c + LINES_PER_CHUNK, lines.length))}
-          className="w-full flex items-center justify-center gap-2 py-2.5 border-t border-white/5 bg-white/[0.015] hover:bg-white/[0.04] text-white/30 hover:text-white/70 transition-all group"
+          className="w-full flex items-center justify-center py-2 border-t border-white/5 bg-white/[0.015] hover:bg-white/[0.04] text-white/20 hover:text-white/60 transition-all group"
         >
-          <ChevronRight className="w-3.5 h-3.5 rotate-90 group-hover:translate-y-0.5 transition-transform" />
-          <span className="text-[10px] font-mono">{lines.length - visibleCount} more lines</span>
-          <ChevronRight className="w-3.5 h-3.5 rotate-90 group-hover:translate-y-0.5 transition-transform" />
+          <ChevronRight className="w-5 h-5 rotate-90 group-hover:translate-y-0.5 transition-transform" />
         </button>
       )}
     </div>
