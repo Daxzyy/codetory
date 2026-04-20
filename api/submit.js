@@ -3,7 +3,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { name, fileName, language, explanation, code, author } = req.body;
+  const { name, fileName, language, explanation, code, author, password } = req.body;
+
+  if (password !== process.env.SUBMIT_PASSWORD) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   if (!name || !fileName || !code) {
     return res.status(400).json({ error: "name, fileName, and code are required" });
