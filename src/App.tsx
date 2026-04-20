@@ -261,9 +261,10 @@ function ViewScript() {
 
     Promise.all([fetchMetadata, fetchCode])
       .then(([_, text]) => {
-        const byteSize = new Blob([text]).size;
+        const trimmed = text.trimEnd();
+        const byteSize = new Blob([trimmed]).size;
         setIsLarge(byteSize > LARGE_FILE_THRESHOLD);
-        setCode(text);
+        setCode(trimmed);
         setLoading(false);
       })
       .catch((err) => {
