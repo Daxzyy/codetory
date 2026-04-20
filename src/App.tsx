@@ -48,7 +48,7 @@ function Navbar() {
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center group">
-          <svg width="130" height="34" viewBox="20 55 340 90" xmlns="http://www.w3.org/2000/svg">
+          <svg width="190" height="44" viewBox="20 40 500 120" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(20,0)">
               <path d="M140 65 A55 55 0 1 0 140 135" stroke="#fff" strokeWidth="12" fill="none" strokeLinecap="butt"/>
               <path d="M78 90 L66 100 L78 110" stroke="#fff" strokeWidth="6.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
@@ -307,7 +307,7 @@ function ViewScript() {
               </span>
 
               <div className="flex items-center gap-0">
-                
+                <a
                   href={"/raw/" + fileName}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -621,7 +621,7 @@ export default function App() {
       <MainLayout>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/view/:fileName} element={<ViewScript />} />
+          <Route path="/view/:fileName" element={<ViewScript />} />
           <Route path="/submit" element={<Submit />} />
         </Routes>
       </MainLayout>
