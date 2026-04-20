@@ -48,19 +48,7 @@ function Navbar() {
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center group">
-          <svg width="190" height="44" viewBox="20 40 500 120" xmlns="http://www.w3.org/2000/svg">
-            <g transform="translate(20,0)">
-              <path d="M140 65 A55 55 0 1 0 140 135" stroke="#fff" strokeWidth="12" fill="none" strokeLinecap="butt"/>
-              <path d="M78 90 L66 100 L78 110" stroke="#fff" strokeWidth="6.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M122 90 L134 100 L122 110" stroke="#fff" strokeWidth="6.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              <line x1="97" y1="116" x2="103" y2="84" stroke="#fff" strokeWidth="6.5" strokeLinecap="round"/>
-              <line x1="140" y1="65" x2="128" y2="77" stroke="transparent" strokeWidth="14"/>
-              <line x1="140" y1="135" x2="132" y2="127" stroke="transparent" strokeWidth="14"/>
-            </g>
-            <text x="168" y="115" fill="#fff" fontSize="40" fontFamily="Ubuntu Mono, monospace" fontWeight="700" letterSpacing="1.5">
-              odetory
-            </text>
-          </svg>
+          <img src="/codetory.svg" alt="Codetory" className="h-11 w-auto" draggable={false} />
         </Link>
       </div>
     </nav>
