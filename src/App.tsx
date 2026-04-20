@@ -47,19 +47,20 @@ function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="border border-white/10 bg-white transition-colors group-hover:border-white/20 rounded-md overflow-hidden">
-            <img
-              src="/icon.png"
-              className="w-9 h-9 rounded-md select-none pointer-events-none"
-              alt="Codetory Logo"
-              draggable={false}
-              onContextMenu={(e) => e.preventDefault()}
-            />
-          </div>
-          <span style={{ fontFamily: "'Ubuntu Mono', monospace", fontWeight: 700, letterSpacing: '0.05em' }} className="text-xl text-white">
-            Codetory
-          </span>
+        <Link to="/" className="flex items-center group">
+          <svg width="130" height="34" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(20,0)">
+              <path d="M140 65 A55 55 0 1 0 140 135" stroke="#fff" strokeWidth="12" fill="none" strokeLinecap="butt"/>
+              <path d="M78 90 L66 100 L78 110" stroke="#fff" strokeWidth="6.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M122 90 L134 100 L122 110" stroke="#fff" strokeWidth="6.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="97" y1="116" x2="103" y2="84" stroke="#fff" strokeWidth="6.5" strokeLinecap="round"/>
+              <line x1="140" y1="65" x2="128" y2="77" stroke="#000" strokeWidth="13"/>
+              <line x1="140" y1="135" x2="132" y2="127" stroke="#000" strokeWidth="13"/>
+            </g>
+            <text x="168" y="115" fill="#fff" fontSize="40" fontFamily="Ubuntu Mono, monospace" fontWeight="700" letterSpacing="1.5">
+              odetory
+            </text>
+          </svg>
         </Link>
       </div>
     </nav>
@@ -306,7 +307,7 @@ function ViewScript() {
               </span>
 
               <div className="flex items-center gap-0">
-                <a
+                
                   href={`/raw/${fileName}`}
                   target="_blank"
                   rel="noopener noreferrer"
