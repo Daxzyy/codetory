@@ -11,7 +11,9 @@ import {
   FileCode,
   ChevronRight,
   Plus,
-  Loader2
+  Loader2,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -372,6 +374,7 @@ function ViewScript() {
 function Submit() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [authed, setAuthed] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
@@ -454,19 +457,28 @@ function Submit() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center justify-center min-h-[60vh]"
+          className="flex flex-col items-center pt-16"
         >
           <div className="flex flex-col gap-4 w-full max-w-xs">
-            <h1 className="text-lg font-bold text-white font-pixel text-center">Password</h1>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && handleAuth()}
-              placeholder="Enter password..."
-              className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all text-center"
-            />
-            {authError && <p className="text-red-400 text-xs font-mono text-center">Wrong password.</p>}
+            <h1 className="text-lg font-bold text-white font-pixel">Password</h1>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleAuth()}
+                placeholder="Enter password..."
+                className="w-full bg-white/5 border border-white/10 px-3 py-2 pr-9 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(v => !v)}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              </button>
+            </div>
+            {authError && <p className="text-red-400 text-xs font-mono">Wrong password.</p>}
             <button
               onClick={handleAuth}
               disabled={authLoading}
