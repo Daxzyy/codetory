@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode, useCallback } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { 
@@ -13,16 +13,14 @@ import {
   Plus,
   Loader2,
   Eye,
-  EyeOff,
-  ChevronLeft,
-  ChevronsLeft,
-  ChevronsRight
+  EyeOff
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const LARGE_FILE_THRESHOLD = 200 * 1024;
-const LINES_PER_PAGE = 100;
+const LINES_PER_CHUNK = 100;
+const PREVIEW_LINES = 30;
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} bytes`;
@@ -54,7 +52,7 @@ function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center group">
+        <Link to="/" className="flex items-center group -ml-3">
           <img src="/codetory.svg" alt="Codetory" className="h-20 w-auto" draggable={false} />
         </Link>
       </div>
@@ -62,21 +60,58 @@ function Navbar() {
   );
 }
 
-function PaginatedCode({ code, language }: { code: string; language: string }) {
+function LargeFileViewer({ code, language }: { code: string; language: string }) {
   const lines = code.split('\n');
-  const totalPages = Math.ceil(lines.length / LINES_PER_PAGE);
-  const [page, setPage] = useState(1);
+  const totalChunks = Math.ceil(lines.length / LINES_PER_CHUNK);
+  const [selectedChunk, setSelectedChunk] = useState<number | null>(null);
 
-  const currentLines = lines.slice((page - 1) * LINES_PER_PAGE, page * LINES_PER_PAGE).join('\n');
+  const previewCode = lines.slice(0, PREVIEW_LINES).join('\n');
+  const isShowingChunk = selectedChunk !== null;
 
-  const goTo = useCallback((p: number) => {
-    setPage(Math.max(1, Math.min(totalPages, p)));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [totalPages]);
+  const chunkStart = selectedChunk !== null ? selectedChunk * LINES_PER_CHUNK : 0;
+  const chunkCode = selectedChunk !== null
+    ? lines.slice(chunkStart, chunkStart + LINES_PER_CHUNK).join('\n')
+    : previewCode;
+
+  const startLine = isShowingChunk ? chunkStart + 1 : 1;
 
   return (
     <div>
-      <div className="text-[11px] font-mono scrollbar-thin scrollbar-thumb-white/10 overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-white/5 bg-white/[0.015]">
+        <span className="text-[10px] font-mono text-yellow-400/60">
+          {isShowingChunk
+            ? `lines ${chunkStart + 1}–${Math.min(chunkStart + LINES_PER_CHUNK, lines.length)} of ${lines.length}`
+            : `preview · first ${PREVIEW_LINES} lines of ${lines.length}`}
+        </span>
+        <div className="relative">
+          <select
+            value={selectedChunk ?? "preview"}
+            onChange={e => {
+              const val = e.target.value;
+              setSelectedChunk(val === "preview" ? null : Number(val));
+            }}
+            className="appearance-none bg-white/5 border border-white/10 text-white/60 hover:text-white text-[10px] font-mono pl-2.5 pr-6 py-1 focus:outline-none focus:border-white/30 transition-all cursor-pointer"
+          >
+            <option value="preview">preview</option>
+            {Array.from({ length: totalChunks }, (_, i) => {
+              const from = i * LINES_PER_CHUNK + 1;
+              const to = Math.min((i + 1) * LINES_PER_CHUNK, lines.length);
+              return (
+                <option key={i} value={i}>
+                  lines {from}–{to}
+                </option>
+              );
+            })}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+            <svg className="w-2.5 h-2.5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div className="text-[11px] font-mono overflow-hidden relative">
         <SyntaxHighlighter
           language={language}
           style={oneDark}
@@ -89,76 +124,15 @@ function PaginatedCode({ code, language }: { code: string; language: string }) {
           }}
           codeTagProps={{ style: { fontFamily: 'inherit' } }}
           showLineNumbers
-          startingLineNumber={(page - 1) * LINES_PER_PAGE + 1}
+          startingLineNumber={startLine}
         >
-          {currentLines}
+          {chunkCode}
         </SyntaxHighlighter>
-      </div>
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between px-4 py-2.5 border-t border-white/5 bg-white/[0.02]">
-          <span className="text-[10px] font-mono text-neutral-500">
-            Page {page} / {totalPages}
-          </span>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => goTo(1)}
-              disabled={page === 1}
-              className="p-1 text-white/30 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronsLeft className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => goTo(page - 1)}
-              disabled={page === 1}
-              className="p-1 text-white/30 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-            <div className="flex items-center gap-1 mx-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let p: number;
-                if (totalPages <= 5) {
-                  p = i + 1;
-                } else if (page <= 3) {
-                  p = i + 1;
-                } else if (page >= totalPages - 2) {
-                  p = totalPages - 4 + i;
-                } else {
-                  p = page - 2 + i;
-                }
-                return (
-                  <button
-                    key={p}
-                    onClick={() => goTo(p)}
-                    className={`w-6 h-6 text-[10px] font-mono transition-all ${
-                      p === page
-                        ? 'bg-white/15 text-white border border-white/20'
-                        : 'text-white/30 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {p}
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              onClick={() => goTo(page + 1)}
-              disabled={page === totalPages}
-              className="p-1 text-white/30 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => goTo(totalPages)}
-              disabled={page === totalPages}
-              className="p-1 text-white/30 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronsRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      )}
+        {!isShowingChunk && (
+          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#161616] to-transparent pointer-events-none" />
+        )}
+      </div>
     </div>
   );
 }
@@ -399,7 +373,7 @@ function ViewScript() {
 
             {!loading && isLarge && (
               <div className="mt-3 px-2 py-1.5 bg-yellow-500/5 border border-yellow-500/20 text-[10px] font-mono text-yellow-400/70">
-                large file · paginated view
+                large file · chunked view
               </div>
             )}
           </motion.div>
@@ -449,12 +423,12 @@ function ViewScript() {
                   ))}
                 </div>
               ) : isLarge ? (
-                <PaginatedCode
+                <LargeFileViewer
                   code={code}
                   language={scriptData?.language?.toLowerCase() || "text"}
                 />
               ) : (
-                <div className="text-[11px] font-mono scrollbar-thin scrollbar-thumb-white/10 overflow-hidden">
+                <div className="text-[11px] font-mono overflow-hidden">
                   <SyntaxHighlighter
                     language={scriptData?.language?.toLowerCase() || "javascript"}
                     style={oneDark}
@@ -465,11 +439,9 @@ function ViewScript() {
                       fontSize: 'inherit',
                       lineHeight: '1.4',
                     }}
-                    codeTagProps={{
-                      style: {
-                        fontFamily: 'inherit',
-                      }
-                    }}
+                    codeTagProps={{ style: { fontFamily: 'inherit' } }}
+                    showLineNumbers
+                    startingLineNumber={1}
                   >
                     {code}
                   </SyntaxHighlighter>
