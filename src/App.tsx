@@ -39,6 +39,7 @@ function LangIcon({ language, className = "w-4 h-4" }: { language?: string; clas
   const map: Record<string, string> = {
     javascript: "/file-js.svg",
     typescript: "/file-ts.svg",
+    json: "/file-json.svg",
     python: "/file-py.svg",
   };
   const src = map[lang];
