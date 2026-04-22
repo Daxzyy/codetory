@@ -151,5 +151,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-04-20"
+  },
+  {
+    "id": "18",
+    "name": "Sticker Lottie",
+    "fileName": "sticker-lottie.js",
+    "explanation": "Mengubah gambar, video, atau stiker biasa menjadi stiker animasi dengan efek menarik seperti jumpscare, spin, pulse, swing, slide, dan shake, sehingga terlihat lebih hidup saat digunakan di WhatsApp.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-22"
   }
 ]
