@@ -788,7 +788,7 @@ function Submit() {
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
                 <div className="bg-white/5 border border-white/10 focus-within:border-white/30 transition-all px-3 py-2 inline-flex items-center w-full">
   <div className="relative inline-flex items-center">
-    <span className="text-sm font-mono text-white invisible whitespace-pre min-w-[1ch]">
+    <span className="text-sm font-mono text-white opacity-0 pointer-events-none whitespace-pre min-w-[1ch]">
       {fileBaseName || "catbox"}
     </span>
     <input
