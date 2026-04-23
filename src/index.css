@@ -55,6 +55,12 @@
     position: relative;
     z-index: 1;
   }
+
+  img, svg {
+    -webkit-touch-callout: none;
+    user-select: none;
+    pointer-events: none;
+  }
 }
 
 @layer components {
