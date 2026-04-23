@@ -12,6 +12,46 @@ import { decryptData } from "./lib/crypto";
 const LARGE_FILE_THRESHOLD = 200 * 1024;
 const LINES_PER_CHUNK = 100;
 const PREVIEW_LINES = 30;
+const SESSION_DURATION = 5 * 60 * 1000;
+const SESSION_KEY = "codetory_session_expiry";
+
+function getSessionExpiry(): number | null {
+  try {
+    const val = localStorage.getItem(SESSION_KEY);
+    if (!val) return null;
+    const expiry = parseInt(val, 10);
+    if (isNaN(expiry)) return null;
+    return expiry;
+  } catch {
+    return null;
+  }
+}
+
+function setSessionExpiry(): void {
+  try {
+    localStorage.setItem(SESSION_KEY, String(Date.now() + SESSION_DURATION));
+  } catch {}
+}
+
+function clearSession(): void {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+  } catch {}
+}
+
+function isSessionValid(): boolean {
+  const expiry = getSessionExpiry();
+  if (!expiry) return false;
+  return Date.now() < expiry;
+}
+
+function formatCountdown(ms: number): string {
+  if (ms <= 0) return "00:00";
+  const totalSec = Math.ceil(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+}
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} bytes`;
@@ -50,7 +90,7 @@ function Navbar() {
           className="flex items-center gap-1.5 px-3 py-1.5 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 transition-all text-[11px] font-bold text-white/50 hover:text-white uppercase tracking-wider"
         >
           <FilePlus className="w-3 h-3" />
-          Add
+          + new
         </Link>
       </div>
     </nav>
@@ -516,11 +556,47 @@ function ViewScript() {
   );
 }
 
+function SessionBadge({ onExpire }: { onExpire: () => void }) {
+  const [remaining, setRemaining] = useState<number>(0);
+
+  useEffect(() => {
+    const tick = () => {
+      const expiry = getSessionExpiry();
+      if (!expiry) { onExpire(); return; }
+      const left = expiry - Date.now();
+      if (left <= 0) { clearSession(); onExpire(); return; }
+      setRemaining(left);
+    };
+
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [onExpire]);
+
+  const isWarning = remaining < 60 * 1000;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`flex items-center gap-2 px-3 py-1.5 border text-[10px] font-mono font-bold tracking-wider transition-all ${
+        isWarning
+          ? "border-red-500/30 bg-red-500/5 text-red-400/80"
+          : "border-white/10 bg-white/5 text-white/40"
+      }`}
+      style={{ borderRadius: 6 }}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full ${isWarning ? "bg-red-400 animate-pulse" : "bg-green-400/60"}`} />
+      session · {formatCountdown(remaining)}
+    </motion.div>
+  );
+}
+
 function Submit() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(() => isSessionValid());
   const [authError, setAuthError] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [tab, setTab] = useState<"add" | "edit" | "delete">("add");
@@ -532,6 +608,11 @@ function Submit() {
   const [errorMsg, setErrorMsg] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [searchManage, setSearchManage] = useState("");
+
+  const handleExpire = () => {
+    setAuthed(false);
+    setPassword("");
+  };
 
   useEffect(() => {
     if (!authed) return;
@@ -551,8 +632,12 @@ function Submit() {
     setAuthError(false);
     try {
       const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-      if (res.ok) setAuthed(true);
-      else setAuthError(true);
+      if (res.ok) {
+        setSessionExpiry();
+        setAuthed(true);
+      } else {
+        setAuthError(true);
+      }
     } catch { setAuthError(true); }
     finally { setAuthLoading(false); }
   };
@@ -580,7 +665,8 @@ function Submit() {
     setStatus("loading");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, fileName, password }) });
+      const storedPassword = password;
+      const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, fileName, password: storedPassword }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit");
       setStatus("success");
@@ -645,7 +731,10 @@ function Submit() {
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-lg font-bold text-white mb-4 font-pixel">Manage Scripts</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-lg font-bold text-white font-pixel">Manage Scripts</h1>
+            <SessionBadge onExpire={handleExpire} />
+          </div>
 
           <div className="flex border-b border-white/10 mb-6">
             <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
