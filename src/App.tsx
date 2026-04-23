@@ -786,35 +786,25 @@ function Submit() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
-                <input
-                  value={form.fileName}
-                  onChange={e => {
-                    const ext = getExt(form.language);
-                    const raw = e.target.value;
-                    const base = raw.endsWith(ext) ? raw.slice(0, -ext.length) : raw.replace(/\.(js|ts|py|json)$/, "");
-                    setFileBaseName(base);
-                    setForm(f => ({ ...f, fileName: base + ext }));
-                  }}
-                  onKeyDown={e => {
-                    const ext = getExt(form.language);
-                    const el = e.currentTarget;
-                    const protectedStart = form.fileName.length - ext.length;
-                    if (["ArrowLeft","ArrowRight","Home","End","ArrowUp","ArrowDown"].includes(e.key)) return;
-                    if (e.key === "Backspace" && (el.selectionStart ?? 0) > protectedStart) { e.preventDefault(); return; }
-                    if (e.key === "Delete" && (el.selectionStart ?? 0) >= protectedStart) { e.preventDefault(); return; }
-                    if ((el.selectionStart ?? 0) >= protectedStart && !["Backspace","Delete"].includes(e.key) && e.key.length === 1) { e.preventDefault(); return; }
-                  }}
-                  onSelect={e => {
-                    const ext = getExt(form.language);
-                    const el = e.currentTarget;
-                    const protectedStart = form.fileName.length - ext.length;
-                    if ((el.selectionEnd ?? 0) > protectedStart) {
-                      el.setSelectionRange(Math.min(el.selectionStart ?? 0, protectedStart), protectedStart);
-                    }
-                  }}
-                  placeholder={`catbox${getExt(form.language)}`}
-                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all w-full"
-                />
+                <div className="bg-white/5 border border-white/10 focus-within:border-white/30 transition-all px-3 py-2 flex items-center">
+                  <input
+                    value={fileBaseName}
+                    onChange={e => {
+                      const base = e.target.value;
+                      setFileBaseName(base);
+                      setForm(f => ({ ...f, fileName: base ? base + getExt(f.language) : "" }));
+                    }}
+                    placeholder="catbox"
+                    className="bg-transparent text-sm text-white font-mono focus:outline-none"
+                    style={{
+                      width: `${Math.max((fileBaseName || "catbox").length, 1)}ch`,
+                      minWidth: "1ch",
+                      // @ts-ignore
+                      fieldSizing: "content",
+                    }}
+                  />
+                  <span className="text-sm font-mono text-white/40 select-none">{getExt(form.language)}</span>
+                </div>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
