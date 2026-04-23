@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Link, u
 import { motion } from "motion/react";
 import { 
   Search, ArrowLeft, Copy, Download, ExternalLink, Check, FileCode,
-  ChevronRight, Plus, Loader2, Eye, EyeOff, FilePlus
+  ChevronRight, Plus, Loader2, Eye, EyeOff, FilePlus, Pencil, Trash2, X
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -50,7 +50,7 @@ function Navbar() {
           className="flex items-center gap-1.5 px-3 py-1.5 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 transition-all text-[11px] font-bold text-white/50 hover:text-white uppercase tracking-wider"
         >
           <FilePlus className="w-3 h-3" />
-          Submit
+          Add
         </Link>
       </div>
     </nav>
@@ -349,6 +349,11 @@ function ViewScript() {
   );
 }
 
+interface Script {
+  id: string; name: string; fileName: string;
+  explanation: string; language: string; author: string; date: string;
+}
+
 function Submit() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -356,9 +361,27 @@ function Submit() {
   const [authed, setAuthed] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+  const [tab, setTab] = useState<"add" | "edit" | "delete">("add");
+  const [scripts, setScripts] = useState<Script[]>([]);
+  const [scriptsLoading, setScriptsLoading] = useState(false);
+  const [selectedScript, setSelectedScript] = useState<Script | null>(null);
   const [form, setForm] = useState({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!authed) return;
+    setScriptsLoading(true);
+    fetch("/api/scripts")
+      .then(res => res.json())
+      .then(async ({ d }) => {
+        const data = await decryptData(d);
+        setScripts(data);
+        setScriptsLoading(false);
+      })
+      .catch(() => setScriptsLoading(false));
+  }, [authed]);
 
   const handleAuth = async () => {
     setAuthLoading(true);
@@ -375,7 +398,19 @@ function Submit() {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async () => {
+  const handleSelectEdit = (script: Script) => {
+    setSelectedScript(script);
+    setStatus("idle");
+    setErrorMsg("");
+    fetch(`/api/scripts?fileName=${script.fileName}`)
+      .then(res => res.json())
+      .then(async ({ d }) => {
+        const { code } = await decryptData(d);
+        setForm({ name: script.name, fileName: script.fileName, language: script.language, explanation: script.explanation, code, author: script.author });
+      });
+  };
+
+  const handleAdd = async () => {
     if (!form.name || !form.fileName || !form.code) { setErrorMsg("Name, fileName, and code are required."); setStatus("error"); return; }
     const fileName = form.fileName.endsWith(".js") || form.fileName.endsWith(".py") || form.fileName.endsWith(".ts") || form.fileName.endsWith(".json")
       ? form.fileName : `${form.fileName}.js`;
@@ -390,11 +425,39 @@ function Submit() {
     } catch (err: any) { setErrorMsg(err.message); setStatus("error"); }
   };
 
+  const handleEdit = async () => {
+    if (!selectedScript || !form.code) { setErrorMsg("Select a script and fill code."); setStatus("error"); return; }
+    setStatus("loading");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/edit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, fileName: selectedScript.fileName, password }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to edit");
+      setStatus("success");
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err: any) { setErrorMsg(err.message); setStatus("error"); }
+  };
+
+  const handleDelete = async (fileName: string) => {
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileName, password }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to delete");
+      setScripts(s => s.filter(x => x.fileName !== fileName));
+      setDeleteConfirm(null);
+      setStatus("idle");
+    } catch (err: any) { setErrorMsg(err.message); setStatus("error"); }
+  };
+
+  const tabClass = (t: string) => `px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all ${tab === t ? "text-white border-b border-white" : "text-white/30 hover:text-white/60"}`;
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <Link to="/" className="inline-flex items-center gap-1.5 text-neutral-500 hover:text-white transition-colors mb-6 group text-[10px] font-bold uppercase tracking-wider">
         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" /> back to home
       </Link>
+
       {!authed ? (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center pt-16">
           <div className="flex flex-col gap-4 w-full max-w-xs">
@@ -419,53 +482,153 @@ function Submit() {
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-lg font-bold text-white mb-1 font-pixel">Add Script</h1>
-          <p className="text-neutral-400 text-xs mb-6 font-lexend">Tambah script baru ke Codetory</p>
-          <div className="flex flex-col gap-4">
-            {[
-              { label: "Name", name: "name", placeholder: "Catbox Uploader" },
-              { label: "File Name", name: "fileName", placeholder: "catbox.js" },
-            ].map(f => (
-              <div key={f.name} className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">{f.label}</label>
-                <input name={f.name} value={(form as any)[f.name]} onChange={handleChange} placeholder={f.placeholder}
-                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
-              </div>
-            ))}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Language</label>
-              <div className="relative">
-                <select name="language" value={form.language} onChange={handleChange}
-                  className="w-full appearance-none bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all pr-8">
-                  <option value="JavaScript">JavaScript</option>
-                  <option value="TypeScript">TypeScript</option>
-                  <option value="Python">Python</option>
-                  <option value="JSON">JSON</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                  <svg className="w-3 h-3 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+          <h1 className="text-lg font-bold text-white mb-4 font-pixel">Manage Scripts</h1>
+
+          <div className="flex border-b border-white/10 mb-6">
+            <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
+            <button className={tabClass("edit")} onClick={() => { setTab("edit"); setStatus("idle"); setErrorMsg(""); setSelectedScript(null); }}>Edit</button>
+            <button className={tabClass("delete")} onClick={() => { setTab("delete"); setStatus("idle"); setErrorMsg(""); }}>Delete</button>
+          </div>
+
+          {tab === "add" && (
+            <div className="flex flex-col gap-4">
+              {[
+                { label: "Name", name: "name", placeholder: "Catbox Uploader" },
+                { label: "File Name", name: "fileName", placeholder: "catbox.js" },
+              ].map(f => (
+                <div key={f.name} className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">{f.label}</label>
+                  <input name={f.name} value={(form as any)[f.name]} onChange={handleChange} placeholder={f.placeholder}
+                    className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
+                </div>
+              ))}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Language</label>
+                <div className="relative">
+                  <select name="language" value={form.language} onChange={handleChange}
+                    className="w-full appearance-none bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all pr-8">
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="TypeScript">TypeScript</option>
+                    <option value="Python">Python</option>
+                    <option value="JSON">JSON</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                    <svg className="w-3 h-3 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
+                <textarea name="explanation" value={form.explanation} onChange={handleChange} placeholder="Script ini berfungsi untuk..." rows={3}
+                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all resize-none" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Code</label>
+                <textarea name="code" value={form.code} onChange={handleChange} placeholder="const x = ..." rows={12}
+                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none" />
+              </div>
+              {status === "error" && <p className="text-red-400 text-xs font-mono">{errorMsg}</p>}
+              {status === "success" && <p className="text-green-400 text-xs font-mono">Script berhasil ditambahkan! Redirecting...</p>}
+              <button onClick={handleAdd} disabled={status === "loading" || status === "success"}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                {status === "loading" ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Plus className="w-4 h-4" /> Submit Script</>}
+              </button>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
-              <textarea name="explanation" value={form.explanation} onChange={handleChange} placeholder="Script ini berfungsi untuk..." rows={3}
-                className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all resize-none" />
+          )}
+
+          {tab === "edit" && (
+            <div className="flex flex-col gap-4">
+              {!selectedScript ? (
+                scriptsLoading ? (
+                  <div className="space-y-2">
+                    {[1,2,3].map(i => <div key={i} className="h-10 bg-white/5 animate-pulse" />)}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    {scripts.map(s => (
+                      <button key={s.id} onClick={() => handleSelectEdit(s)}
+                        className="flex items-center justify-between px-3 py-2.5 border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/30 transition-all text-left group">
+                        <div className="flex items-center gap-2.5">
+                          <LangIcon language={s.language} className="w-4 h-4" />
+                          <span className="text-sm text-white/70 group-hover:text-white font-medium">{s.name}</span>
+                          <span className="text-[10px] font-mono text-neutral-500">{s.fileName}</span>
+                        </div>
+                        <Pencil className="w-3 h-3 text-white/20 group-hover:text-white/60 transition-all" />
+                      </button>
+                    ))}
+                  </div>
+                )
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-neutral-400">Editing: <span className="text-white/60">{selectedScript.fileName}</span></span>
+                    <button onClick={() => setSelectedScript(null)} className="text-white/30 hover:text-white transition-all">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {[
+                    { label: "Name", name: "name", placeholder: "Catbox Uploader" },
+                  ].map(f => (
+                    <div key={f.name} className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">{f.label}</label>
+                      <input name={f.name} value={(form as any)[f.name]} onChange={handleChange} placeholder={f.placeholder}
+                        className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
+                    </div>
+                  ))}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
+                    <textarea name="explanation" value={form.explanation} onChange={handleChange} rows={3}
+                      className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all resize-none" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Code</label>
+                    <textarea name="code" value={form.code} onChange={handleChange} rows={12}
+                      className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none" />
+                  </div>
+                  {status === "error" && <p className="text-red-400 text-xs font-mono">{errorMsg}</p>}
+                  {status === "success" && <p className="text-green-400 text-xs font-mono">Script berhasil diupdate! Redirecting...</p>}
+                  <button onClick={handleEdit} disabled={status === "loading" || status === "success"}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    {status === "loading" ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : <><Pencil className="w-4 h-4" /> Save Changes</>}
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Code</label>
-              <textarea name="code" value={form.code} onChange={handleChange} placeholder="const x = ..." rows={12}
-                className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none" />
+          )}
+
+          {tab === "delete" && (
+            <div className="flex flex-col gap-2">
+              {scriptsLoading ? (
+                <div className="space-y-2">
+                  {[1,2,3].map(i => <div key={i} className="h-10 bg-white/5 animate-pulse" />)}
+                </div>
+              ) : (
+                scripts.map(s => (
+                  <div key={s.id} className="flex items-center justify-between px-3 py-2.5 border border-white/10 bg-white/[0.02]">
+                    <div className="flex items-center gap-2.5">
+                      <LangIcon language={s.language} className="w-4 h-4" />
+                      <span className="text-sm text-white/70 font-medium">{s.name}</span>
+                      <span className="text-[10px] font-mono text-neutral-500">{s.fileName}</span>
+                    </div>
+                    {deleteConfirm === s.fileName ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-red-400 font-mono">sure?</span>
+                        <button onClick={() => handleDelete(s.fileName)} className="text-[10px] font-bold text-red-400 hover:text-red-300 uppercase tracking-wider transition-all">Yes</button>
+                        <button onClick={() => setDeleteConfirm(null)} className="text-[10px] font-bold text-white/30 hover:text-white uppercase tracking-wider transition-all">No</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setDeleteConfirm(s.fileName)} className="text-white/20 hover:text-red-400 transition-all">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+              {status === "error" && <p className="text-red-400 text-xs font-mono mt-2">{errorMsg}</p>}
             </div>
-            {status === "error" && <p className="text-red-400 text-xs font-mono">{errorMsg}</p>}
-            {status === "success" && <p className="text-green-400 text-xs font-mono">Script berhasil ditambahkan! Redirecting...</p>}
-            <button onClick={handleSubmit} disabled={status === "loading" || status === "success"}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-              {status === "loading" ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Plus className="w-4 h-4" /> Submit Script</>}
-            </button>
-          </div>
+          )}
         </motion.div>
       )}
     </div>
