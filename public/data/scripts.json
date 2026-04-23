@@ -169,5 +169,14 @@
     "language": "Python",
     "author": "Givy",
     "date": "2026-04-23"
+  },
+  {
+    "id": "20",
+    "name": "Image Search Similar",
+    "fileName": "image-search-similar.js",
+    "explanation": "Mengunggah gambar ke image-search.org lalu menampilkan hasil gambar serupa dari berbagai mesin pencari seperti Google, Bing, Yandex, Baidu, Sogou, dan TinEye.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-23"
   }
 ]
