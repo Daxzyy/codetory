@@ -619,6 +619,7 @@ function Submit() {
   const [scriptsLoading, setScriptsLoading] = useState(false);
   const [selectedScript, setSelectedScript] = useState<Script | null>(null);
   const [form, setForm] = useState({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" });
+  const [fileBaseName, setFileBaseName] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -644,12 +645,7 @@ function Submit() {
 
   useEffect(() => {
     if (tab !== "add") return;
-    const base = stripExt(form.fileName);
-    if (!base) return;
-    const next = base + getExt(form.language);
-    if (next !== form.fileName) {
-      setForm(f => ({ ...f, fileName: next }));
-    }
+    setForm(f => ({ ...f, fileName: fileBaseName ? fileBaseName + getExt(f.language) : "" }));
   }, [form.language, tab]);
 
   const handleAuth = async () => {
@@ -669,12 +665,6 @@ function Submit() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  };
-
-  const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const base = stripExt(raw);
-    setForm(f => ({ ...f, fileName: base + getExt(f.language) }));
   };
 
   const handleSelectEdit = (script: Script) => {
@@ -765,7 +755,7 @@ function Submit() {
           </div>
 
           <div className="flex border-b border-white/10 mb-6">
-            <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
+            <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setFileBaseName(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
             <button className={tabClass("edit")} onClick={() => { setTab("edit"); setStatus("idle"); setErrorMsg(""); setSelectedScript(null); setSearchManage(""); }}>Edit</button>
             <button className={tabClass("delete")} onClick={() => { setTab("delete"); setStatus("idle"); setErrorMsg(""); setSearchManage(""); }}>Delete</button>
           </div>
@@ -796,13 +786,19 @@ function Submit() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
-                <input
-                  name="fileName"
-                  value={form.fileName}
-                  onChange={handleFileNameChange}
-                  placeholder={`catbox${getExt(form.language)}`}
-                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all"
-                />
+                <div className="flex items-center bg-white/5 border border-white/10 focus-within:border-white/30 transition-all">
+                  <input
+                    value={fileBaseName}
+                    onChange={e => {
+                      const base = e.target.value;
+                      setFileBaseName(base);
+                      setForm(f => ({ ...f, fileName: base ? base + getExt(f.language) : "" }));
+                    }}
+                    placeholder="catbox"
+                    className="flex-1 bg-transparent px-3 py-2 text-sm text-white font-mono focus:outline-none min-w-0"
+                  />
+                  <span className="pr-3 text-sm font-mono text-white/30 select-none flex-shrink-0">{getExt(form.language)}</span>
+                </div>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
