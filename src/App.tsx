@@ -143,7 +143,7 @@ function InlineDropdown({
               <button
                 key={opt.value}
                 onClick={() => { onChange(opt.value); setOpen(false); }}
-                className={`w-full text-left px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                className={`w-full text-left px-3 py-2 text-[11px] font-bold transition-colors ${
                   value === opt.value
                     ? "text-white bg-white/[0.07]"
                     : "text-white/35 hover:text-white hover:bg-white/[0.04]"
@@ -160,12 +160,50 @@ function InlineDropdown({
   );
 }
 
-function Home() {
-  interface Script {
-    id: string; name: string; fileName: string;
-    explanation: string; language: string; author: string; date: string;
-  }
+interface Script {
+  id: string; name: string; fileName: string;
+  explanation: string; language: string; author: string; date: string;
+}
 
+function GroupSeparator({ label }: { label: string }) {
+  return (
+    <div className="col-span-full flex items-center gap-3 py-1 mt-2 first:mt-0">
+      <div className="h-px flex-1 bg-white/[0.06]" />
+      <span
+        className="text-[10px] text-white/25 select-none"
+        style={{ fontFamily: "'Ubuntu Mono', monospace" }}
+      >
+        — {label} —
+      </span>
+      <div className="h-px flex-1 bg-white/[0.06]" />
+    </div>
+  );
+}
+
+function groupScripts(scripts: Script[], sort: SortOption): { key: string; label: string; items: Script[] }[] {
+  if (sort === "newest") {
+    const map = new Map<string, Script[]>();
+    for (const s of scripts) {
+      const d = new Date(s.date);
+      const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      if (!map.has(label)) map.set(label, []);
+      map.get(label)!.push(s);
+    }
+    return Array.from(map.entries()).map(([label, items]) => ({ key: label, label, items }));
+  } else {
+    const map = new Map<string, Script[]>();
+    for (const s of scripts) {
+      const letter = s.name[0]?.toUpperCase() || '#';
+      if (!map.has(letter)) map.set(letter, []);
+      map.get(letter)!.push(s);
+    }
+    return Array.from(map.entries())
+      .sort((a, b) => sort === "a-z" ? a.key.localeCompare(b.key) : b.key.localeCompare(a.key))
+      .map(([letter, items]) => ({ key: letter, label: letter, items }));
+  }
+}
+
+function Home() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -212,6 +250,8 @@ function Home() {
       return 0;
     });
 
+  const groups = groupScripts(filteredScripts, sort);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
@@ -257,7 +297,7 @@ function Home() {
           <InlineDropdown label="Sort" options={sortOptions} value={sort} onChange={(v) => setSort(v as SortOption)} />
           <div className="ml-auto">
             <span
-              className="text-[13px] font-bold text-white/20 tabular-nums"
+              className="text-[13px] font-bold text-white/60 tabular-nums"
               style={{ fontFamily: "'Ubuntu Mono', monospace" }}
             >
               {loading ? "—" : `${filteredScripts.length} ${filteredScripts.length === 1 ? "file" : "files"}`}
@@ -274,36 +314,41 @@ function Home() {
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           initial="hidden" animate="visible"
-          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } }}
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.04 } } }}
         >
-          {filteredScripts.map(script => (
-            <Link key={script.id} to={`/view/${script.fileName}`} className="group">
-              <motion.div
-                variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                className="border border-white/10 bg-white/[0.02] p-5 h-full hover:bg-white/[0.05] hover:border-white/30 transition-all duration-300 flex flex-col"
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                    <div className="p-0.5 border border-white/10 bg-white/5 flex-shrink-0">
-                      <LangIcon language={script.language} className="w-5 h-5" />
+          {groups.map(group => (
+            <>
+              <GroupSeparator key={`sep-${group.key}`} label={group.label} />
+              {group.items.map(script => (
+                <Link key={script.id} to={`/view/${script.fileName}`} className="group">
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                    className="border border-white/10 bg-white/[0.02] p-5 h-full hover:bg-white/[0.05] hover:border-white/30 transition-all duration-300 flex flex-col"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                        <div className="p-0.5 border border-white/10 bg-white/5 flex-shrink-0">
+                          <LangIcon language={script.language} className="w-5 h-5" />
+                        </div>
+                        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                          <h3 className="text-sm font-bold text-white/80 group-hover:text-white tracking-tight leading-snug">{script.name}</h3>
+                          {script.date && (
+                            <span className="text-[9px] font-mono text-neutral-400">
+                              {new Date(script.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono border border-white/5 px-2 py-0.5 bg-white/5 opacity-40 flex-shrink-0 uppercase ml-2">{script.language}</span>
                     </div>
-                    <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                      <h3 className="text-sm font-bold text-white/80 group-hover:text-white tracking-tight leading-snug">{script.name}</h3>
-                      {script.date && (
-                        <span className="text-[9px] font-mono text-neutral-400">
-                          {new Date(script.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        </span>
-                      )}
+                    <div className="flex items-start justify-between gap-3 flex-1">
+                      <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1">{truncate(script.explanation, 45)}</p>
+                      <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-white transition-all flex-shrink-0 mt-0.5" />
                     </div>
-                  </div>
-                  <span className="text-[10px] font-mono border border-white/5 px-2 py-0.5 bg-white/5 opacity-40 flex-shrink-0 uppercase ml-2">{script.language}</span>
-                </div>
-                <div className="flex items-start justify-between gap-3 flex-1">
-                  <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1">{truncate(script.explanation, 45)}</p>
-                  <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-white transition-all flex-shrink-0 mt-0.5" />
-                </div>
-              </motion.div>
-            </Link>
+                  </motion.div>
+                </Link>
+              ))}
+            </>
           ))}
         </motion.div>
       )}
@@ -469,11 +514,6 @@ function ViewScript() {
       </div>
     </div>
   );
-}
-
-interface Script {
-  id: string; name: string; fileName: string;
-  explanation: string; language: string; author: string; date: string;
 }
 
 function Submit() {
