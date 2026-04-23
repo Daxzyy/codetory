@@ -620,6 +620,7 @@ function Submit() {
   const [selectedScript, setSelectedScript] = useState<Script | null>(null);
   const [form, setForm] = useState({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" });
   const [fileBaseName, setFileBaseName] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -786,7 +787,7 @@ function Submit() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
-                <div className="bg-white/5 border border-white/10 focus-within:border-white/30 transition-all px-3 py-2 inline-flex items-center w-full">
+                <div className="bg-white/5 border border-white/10 focus-within:border-white/30 transition-all px-3 py-2 inline-flex items-center w-full cursor-text" onClick={() => fileInputRef.current?.focus()}>
   <div className="relative inline-flex items-center">
     <span className="text-sm font-mono text-white opacity-0 pointer-events-none whitespace-pre min-w-[1ch]">
       {fileBaseName || "catbox"}
@@ -800,6 +801,7 @@ function Submit() {
       }}
       placeholder="catbox"
       className="bg-transparent text-sm text-white font-mono focus:outline-none absolute inset-0 w-full placeholder:text-white/30"
+ref={fileInputRef}
     />
   </div>
   <span className="text-sm font-mono text-white/40 select-none">{getExt(form.language)}</span>
