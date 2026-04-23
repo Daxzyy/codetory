@@ -120,10 +120,11 @@ function InlineDropdown({
 
   return (
     <div ref={ref} className="relative flex items-center gap-2">
-      <span className="text-[10px] font-mono text-white/25 uppercase tracking-widest select-none">{label}</span>
+      <span className="text-[10px] text-white/25 uppercase tracking-widest select-none" style={{ fontFamily: "'Ubuntu Mono', monospace" }}>{label}</span>
       <button
         onClick={() => setOpen(v => !v)}
         className="flex items-center gap-1 text-[13px] font-bold text-white/60 hover:text-white/90 transition-colors"
+        style={{ fontFamily: "'Ubuntu Mono', monospace" }}
       >
         {current?.label}
         <ChevronDown className={`w-3 h-3 text-white/20 transition-transform duration-150 ${open ? "rotate-180" : ""}`} />
@@ -147,6 +148,7 @@ function InlineDropdown({
                     ? "text-white bg-white/[0.07]"
                     : "text-white/35 hover:text-white hover:bg-white/[0.04]"
                 }`}
+                style={{ fontFamily: "'Ubuntu Mono', monospace" }}
               >
                 {opt.label}
               </button>
@@ -254,7 +256,10 @@ function Home() {
           <div className="w-px h-3.5 bg-white/[0.08]" />
           <InlineDropdown label="Sort" options={sortOptions} value={sort} onChange={(v) => setSort(v as SortOption)} />
           <div className="ml-auto">
-            <span className="text-[13px] font-bold text-white/20 tabular-nums">
+            <span
+              className="text-[13px] font-bold text-white/20 tabular-nums"
+              style={{ fontFamily: "'Ubuntu Mono', monospace" }}
+            >
               {loading ? "—" : `${filteredScripts.length} ${filteredScripts.length === 1 ? "file" : "files"}`}
             </span>
           </div>
