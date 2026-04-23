@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Link, u
 import { motion } from "motion/react";
 import { 
   Search, ArrowLeft, Copy, Download, ExternalLink, Check, FileCode,
-  ChevronRight, Plus, Loader2, Eye, EyeOff, FilePlus, Pencil, Trash2, X
+  ChevronRight, Plus, Loader2, Eye, EyeOff, FilePlus, Pencil, Trash2, X, ChevronDown
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -92,6 +92,8 @@ function LargeFileViewer({ code, language }: { code: string; language: string })
   );
 }
 
+type SortOption = "newest" | "a-z" | "z-a";
+
 function Home() {
   interface Script {
     id: string; name: string; fileName: string;
@@ -101,6 +103,10 @@ function Home() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [sort, setSort] = useState<SortOption>("newest");
+  const [langFilter, setLangFilter] = useState("all");
+  const [sortOpen, setSortOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/scripts")
@@ -116,10 +122,31 @@ function Home() {
       });
   }, []);
 
-  const filteredScripts = scripts.filter(s =>
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.language.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    function handleClick() {
+      setSortOpen(false);
+      setLangOpen(false);
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
+
+  const availableLangs = Array.from(new Set(scripts.map(s => s.language))).sort();
+
+  const filteredScripts = scripts
+    .filter(s =>
+      (s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.language.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (langFilter === "all" || s.language === langFilter)
+    )
+    .sort((a, b) => {
+      if (sort === "newest") return new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (sort === "a-z") return a.name.localeCompare(b.name);
+      if (sort === "z-a") return b.name.localeCompare(a.name);
+      return 0;
+    });
+
+  const sortLabels: Record<SortOption, string> = { newest: "Newest", "a-z": "A–Z", "z-a": "Z–A" };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -132,17 +159,89 @@ function Home() {
             a collection of snippets, scripts, and tools for personal projects
           </p>
         </motion.div>
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-          <input
-            type="text"
-            placeholder="Search snippets..."
-            className="w-full bg-white/5 border border-white/10 rounded-none pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-white/30 transition-all shadow-inner"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <input
+              type="text"
+              placeholder="Search snippets..."
+              className="w-full bg-white/5 border border-white/10 rounded-none pl-10 pr-8 py-2.5 text-sm focus:outline-none focus:border-white/30 transition-all shadow-inner"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="relative" onClick={e => e.stopPropagation()}>
+              <button
+                onClick={() => { setSortOpen(v => !v); setLangOpen(false); }}
+                className="flex items-center gap-1.5 px-3 py-2.5 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-[11px] font-bold text-white/50 hover:text-white uppercase tracking-wider whitespace-nowrap"
+              >
+                {sortLabels[sort]}
+                <ChevronDown className="w-3 h-3" />
+              </button>
+              {sortOpen && (
+                <div className="absolute right-0 top-full mt-1 border border-white/10 bg-[#1a1a1a] z-50 min-w-[100px]">
+                  {(["newest", "a-z", "z-a"] as SortOption[]).map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => { setSort(opt); setSortOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-all ${sort === opt ? "text-white bg-white/10" : "text-white/40 hover:text-white hover:bg-white/5"}`}
+                    >
+                      {sortLabels[opt]}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="relative" onClick={e => e.stopPropagation()}>
+              <button
+                onClick={() => { setLangOpen(v => !v); setSortOpen(false); }}
+                className="flex items-center gap-1.5 px-3 py-2.5 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-[11px] font-bold text-white/50 hover:text-white uppercase tracking-wider whitespace-nowrap"
+              >
+                {langFilter === "all" ? "Lang" : langFilter}
+                <ChevronDown className="w-3 h-3" />
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 top-full mt-1 border border-white/10 bg-[#1a1a1a] z-50 min-w-[110px]">
+                  <button
+                    onClick={() => { setLangFilter("all"); setLangOpen(false); }}
+                    className={`w-full text-left px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-all ${langFilter === "all" ? "text-white bg-white/10" : "text-white/40 hover:text-white hover:bg-white/5"}`}
+                  >
+                    All
+                  </button>
+                  {availableLangs.map(lang => (
+                    <button
+                      key={lang}
+                      onClick={() => { setLangFilter(lang); setLangOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-all ${langFilter === lang ? "text-white bg-white/10" : "text-white/40 hover:text-white hover:bg-white/5"}`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+
+      {!loading && (
+        <div className="mb-4">
+          <span className="text-[11px] font-mono text-white/20 uppercase tracking-wider">
+            {filteredScripts.length} {filteredScripts.length === 1 ? "file" : "files"}
+          </span>
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
