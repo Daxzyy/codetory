@@ -46,4 +46,4 @@ async function getStock() {
     }
 }
 
-getStock(); asu
+getStock();
