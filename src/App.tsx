@@ -339,7 +339,7 @@ function Home() {
                           )}
                         </div>
                       </div>
-                      <span className="text-[10px] font-mono border border-white/5 px-2 py-0.5 bg-white/5 opacity-40 flex-shrink-0 uppercase ml-2">{script.language}</span>
+                      <span className="text-[10px] font-mono border border-white/5 px-2 py-0.5 bg-white/[0.12] flex-shrink-0 ml-2 text-white/50">{script.language}</span>
                     </div>
                     <div className="flex items-start justify-between gap-3 flex-1">
                       <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1">{truncate(script.explanation, 45)}</p>
