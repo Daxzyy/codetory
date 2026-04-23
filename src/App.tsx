@@ -15,6 +15,21 @@ const PREVIEW_LINES = 30;
 const SESSION_DURATION = 5 * 60 * 1000;
 const SESSION_KEY = "codetory_session_expiry";
 
+const EXT_MAP: Record<string, string> = {
+  JavaScript: ".js",
+  TypeScript: ".ts",
+  Python: ".py",
+  JSON: ".json",
+};
+
+function getExt(language: string): string {
+  return EXT_MAP[language] || ".js";
+}
+
+function stripExt(fileName: string): string {
+  return fileName.replace(/\.(js|ts|py|json)$/, "");
+}
+
 function getSessionExpiry(): number | null {
   try {
     const val = localStorage.getItem(SESSION_KEY);
@@ -627,6 +642,16 @@ function Submit() {
       .catch(() => setScriptsLoading(false));
   }, [authed]);
 
+  useEffect(() => {
+    if (tab !== "add") return;
+    const base = stripExt(form.fileName);
+    if (!base) return;
+    const next = base + getExt(form.language);
+    if (next !== form.fileName) {
+      setForm(f => ({ ...f, fileName: next }));
+    }
+  }, [form.language, tab]);
+
   const handleAuth = async () => {
     setAuthLoading(true);
     setAuthError(false);
@@ -646,6 +671,12 @@ function Submit() {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
+  const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const base = stripExt(raw);
+    setForm(f => ({ ...f, fileName: base + getExt(f.language) }));
+  };
+
   const handleSelectEdit = (script: Script) => {
     setSelectedScript(script);
     setStatus("idle");
@@ -660,13 +691,10 @@ function Submit() {
 
   const handleAdd = async () => {
     if (!form.name || !form.fileName || !form.code) { setErrorMsg("Name, fileName, and code are required."); setStatus("error"); return; }
-    const fileName = form.fileName.endsWith(".js") || form.fileName.endsWith(".py") || form.fileName.endsWith(".ts") || form.fileName.endsWith(".json")
-      ? form.fileName : `${form.fileName}.js`;
     setStatus("loading");
     setErrorMsg("");
     try {
-      const storedPassword = password;
-      const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, fileName, password: storedPassword }) });
+      const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, password }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit");
       setStatus("success");
@@ -679,7 +707,7 @@ function Submit() {
     setStatus("loading");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/edit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, fileName: selectedScript.fileName, password }) });
+      const res = await fetch("/api/edit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, password }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to edit");
       setStatus("success");
@@ -744,16 +772,11 @@ function Submit() {
 
           {tab === "add" && (
             <div className="flex flex-col gap-4">
-              {[
-                { label: "Name", name: "name", placeholder: "Catbox Uploader" },
-                { label: "File Name", name: "fileName", placeholder: "catbox.js" },
-              ].map(f => (
-                <div key={f.name} className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">{f.label}</label>
-                  <input name={f.name} value={(form as any)[f.name]} onChange={handleChange} placeholder={f.placeholder}
-                    className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
-                </div>
-              ))}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Name</label>
+                <input name="name" value={form.name} onChange={handleChange} placeholder="Catbox Uploader"
+                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
+              </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Language</label>
                 <div className="relative">
@@ -770,6 +793,16 @@ function Submit() {
                     </svg>
                   </div>
                 </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
+                <input
+                  name="fileName"
+                  value={form.fileName}
+                  onChange={handleFileNameChange}
+                  placeholder={`catbox${getExt(form.language)}`}
+                  className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all"
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
@@ -830,15 +863,16 @@ function Submit() {
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                  {[
-                    { label: "Name", name: "name", placeholder: "Catbox Uploader" },
-                  ].map(f => (
-                    <div key={f.name} className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">{f.label}</label>
-                      <input name={f.name} value={(form as any)[f.name]} onChange={handleChange} placeholder={f.placeholder}
-                        className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
-                    </div>
-                  ))}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Name</label>
+                    <input name="name" value={form.name} onChange={handleChange} placeholder="Catbox Uploader"
+                      className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 transition-all" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
+                    <input name="fileName" value={form.fileName} onChange={handleChange} placeholder="catbox.js"
+                      className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all" />
+                  </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Explanation</label>
                     <textarea name="explanation" value={form.explanation} onChange={handleChange} rows={3}
