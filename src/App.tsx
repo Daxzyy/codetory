@@ -787,23 +787,17 @@ function Submit() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">File Name</label>
                 <div className="bg-white/5 border border-white/10 focus-within:border-white/30 transition-all px-3 py-2 flex items-center">
-                  <input
-                    value={fileBaseName}
-                    onChange={e => {
-                      const base = e.target.value;
-                      setFileBaseName(base);
-                      setForm(f => ({ ...f, fileName: base ? base + getExt(f.language) : "" }));
-                    }}
-                    placeholder="catbox"
-                    className="bg-transparent text-sm text-white font-mono focus:outline-none"
-                    style={{
-                      width: `${Math.max((fileBaseName || "catbox").length, 1)}ch`,
-                      minWidth: "1ch",
-                      // @ts-ignore
-                      fieldSizing: "content",
-                    }}
-                  />
-                  <span className="text-sm font-mono text-white/40 select-none">{getExt(form.language)}</span>
+<input
+  value={fileBaseName}
+  onChange={e => {
+    const base = e.target.value;
+    setFileBaseName(base);
+    setForm(f => ({ ...f, fileName: base ? base + getExt(f.language) : "" }));
+  }}
+  placeholder="catbox"
+  className="bg-transparent text-sm text-white font-mono focus:outline-none w-auto"
+/>
+<span className="text-sm font-mono text-white/40 select-none -ml-1">{getExt(form.language)}</span>
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
