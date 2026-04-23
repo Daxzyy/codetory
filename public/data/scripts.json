@@ -136,7 +136,7 @@
   },
   {
     "id": "16",
-    "name": "100K Kata",
+    "name": "Kumpulan 100 Ribu Kata KBBI",
     "fileName": "kamus.json",
     "explanation": "Kumpulan 100 ribu kata dari Kamus Besar Bahasa Indonesia",
     "language": "JSON",
