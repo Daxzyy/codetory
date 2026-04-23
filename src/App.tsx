@@ -172,7 +172,7 @@ function GroupSeparator({ label }: { label: string }) {
         className="text-[11px] text-white/45 select-none"
         style={{ fontFamily: "'Ubuntu Mono', monospace" }}
       >
-        {label}
+      # {label}
       </span>
       <div className="h-px flex-1 bg-white/[0.12]" />
     </div>
