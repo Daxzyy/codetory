@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "38",
-    "name": "fake ff lobby",
-    "fileName": "lobby-ff-fake.js",
-    "explanation": "Buat lobi FF palsu dengan nama kustom menggunakan FFmpeg.",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "39",
     "name": "WebToon",
     "fileName": "webtoon.js",
