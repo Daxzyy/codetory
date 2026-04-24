@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "37",
-    "name": "SoftKomic",
-    "fileName": "softkomic.js",
-    "explanation": "fitur softkomic search, detail dn download",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "38",
     "name": "fake ff lobby",
     "fileName": "lobby-ff-fake.js",
