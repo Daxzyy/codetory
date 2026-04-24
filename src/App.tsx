@@ -835,12 +835,7 @@ function Submit() {
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-lg font-bold text-white font-pixel">
-  Manage Scripts
-  {!scriptsLoading && (
-    <span className="ml-2 text-sm font-mono text-white/30">({scripts.length} files)</span>
-  )}
-</h1>
+            <h1 className="text-lg font-bold text-white font-pixel">Manage Scripts</h1>
             <SessionBadge onExpire={handleExpire} />
           </div>
 
