@@ -207,15 +207,6 @@
     "date": "2026-04-24"
   },
   {
-    "id": "26",
-    "name": "Cloudflare Solver",
-    "fileName": "turnstile-solver.js",
-    "explanation": "Solver Cloudflare Turnstile otomatis menggunakan Puppeteer dengan stealth plugin. Mendukung multi-thread, proxy rotation, dan custom user-agent.",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "27",
     "name": "Youtube Downloader",
     "fileName": "ssyoutube-ytdl.js",
