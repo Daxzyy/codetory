@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "23",
-    "name": "Apple Music Downloader",
-    "fileName": "applemusicdl.js",
-    "explanation": "Mengunduh musik dari Apple music",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "24",
     "name": "iloveimg.js",
     "fileName": "iloveimg.js",
