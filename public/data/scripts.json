@@ -178,5 +178,194 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-04-23"
+  },
+  {
+    "id": "21",
+    "name": "Fake Profile Wa",
+    "fileName": "fakeppwa.js",
+    "explanation": "Membuat Profile wa palsu. Input : pp url, nama, tentang, telepon.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "22",
+    "name": "Fake afinitas ML",
+    "fileName": "fakeafinitasml.js",
+    "explanation": "Membuat Afinitas ml palsu. input PP url.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "23",
+    "name": "Apple Music Downloader",
+    "fileName": "applemusicdl.js",
+    "explanation": "Mengunduh musik dari Apple music",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "24",
+    "name": "iloveimg.js",
+    "fileName": "iloveimg.js",
+    "explanation": "Ai Yang Berguna",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "25",
+    "name": "Terabox Downloader",
+    "fileName": "terabox-dl.js",
+    "explanation": "Mengunduh File dari link Terabox dengan mudah tanpa iklan yang menggangu",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "26",
+    "name": "Cloudflare Solver",
+    "fileName": "turnstile-solver.js",
+    "explanation": "Solver Cloudflare Turnstile otomatis menggunakan Puppeteer dengan stealth plugin. Mendukung multi-thread, proxy rotation, dan custom user-agent.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "27",
+    "name": "Youtube Downloader",
+    "fileName": "ssyoutube-ytdl.js",
+    "explanation": "Youtube Downloader. Support mp3 dan mp4",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "28",
+    "name": "Anichin",
+    "fileName": "anichin-v1.js",
+    "explanation": "Scraper Anichin (Website Nonton Donghua)",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "29",
+    "name": "Big Jpg",
+    "fileName": "bigjpg-upscale.js",
+    "explanation": "Up Scala",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "30",
+    "name": "Chatex Ai",
+    "fileName": "chatex-ai.js",
+    "explanation": "Intinya bagus banget, kalian bisa coba",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "31",
+    "name": "Search Server Minecraft",
+    "fileName": "search-mcserver.js",
+    "explanation": "Mencari Server-server Minecraft",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "32",
+    "name": "Ailabs Image & Video",
+    "fileName": "ai-generateVideo&Image.js",
+    "explanation": "Membuat Gambar dan Video dari Prompt",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "33",
+    "name": "Animekuindo",
+    "fileName": "animeku-indo.js",
+    "explanation": "Scraper Website Nonton Anime",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "34",
+    "name": "Yt Image",
+    "fileName": "yt-image.js",
+    "explanation": "Sulit dijelaskan intinya untuk download PP, banner, thumbnail YouTube.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "35",
+    "name": "Kusonime",
+    "fileName": "kusonime.js",
+    "explanation": "Scraper Website Cari Anime",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "36",
+    "name": "Catbox",
+    "fileName": "catbox-v1.js",
+    "explanation": "mengubah gambar ke url",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "37",
+    "name": "Mcpedl",
+    "fileName": "mcpedl.js",
+    "explanation": "Mencari add-on, maps, skin, texture, di mcpedl",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "38",
+    "name": "SoftKomic",
+    "fileName": "softkomic.js",
+    "explanation": "fitur softkomic search, detail dn download",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "39",
+    "name": "fake ff lobby",
+    "fileName": "lobby-ff-fake.js",
+    "explanation": "Buat lobi FF palsu dengan nama kustom menggunakan FFmpeg.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "40",
+    "name": "WebToon",
+    "fileName": "webtoon.js",
+    "explanation": "fitur webtoon search, detail dn download",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
+  },
+  {
+    "id": "41",
+    "name": "Buid ml with canvas",
+    "fileName": "buidml-with-canvas.js",
+    "explanation": "No description",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-04-24"
   }
 ]
