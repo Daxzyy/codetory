@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "21",
-    "name": "Fake Profile Wa",
-    "fileName": "fakeppwa.js",
-    "explanation": "Membuat Profile wa palsu. Input : pp url, nama, tentang, telepon.",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "23",
     "name": "Apple Music Downloader",
     "fileName": "applemusicdl.js",
