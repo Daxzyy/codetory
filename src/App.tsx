@@ -844,11 +844,16 @@ function Submit() {
             <SessionBadge onExpire={handleExpire} />
           </div>
 
-          <div className="flex border-b border-white/10 mb-6">
-            <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setFileBaseName(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
-            <button className={tabClass("edit")} onClick={() => { setTab("edit"); setStatus("idle"); setErrorMsg(""); setSelectedScript(null); setSearchManage(""); }}>Edit</button>
-            <button className={tabClass("delete")} onClick={() => { setTab("delete"); setStatus("idle"); setErrorMsg(""); setSearchManage(""); }}>Delete</button>
-          </div>
+          <div className="flex items-center border-b border-white/10 mb-6">
+  <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setFileBaseName(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
+  <button className={tabClass("edit")} onClick={() => { setTab("edit"); setStatus("idle"); setErrorMsg(""); setSelectedScript(null); setSearchManage(""); }}>Edit</button>
+  <button className={tabClass("delete")} onClick={() => { setTab("delete"); setStatus("idle"); setErrorMsg(""); setSearchManage(""); }}>Delete</button>
+  {!scriptsLoading && (
+    <span className="ml-auto text-[13px] font-bold text-white/60 tabular-nums pb-1.5" style={{ fontFamily: "'Ubuntu Mono', monospace" }}>
+      {scripts.length} {scripts.length === 1 ? "file" : "files"}
+    </span>
+  )}
+</div>
 
           {tab === "add" && (
             <div className="flex flex-col gap-4">
