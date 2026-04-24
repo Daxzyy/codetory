@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "32",
-    "name": "Ailabs Image & Video",
-    "fileName": "ai-generate-video-image.js",
-    "explanation": "Membuat Gambar dan Video dari Prompt",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "33",
     "name": "Animekuindo",
     "fileName": "animeku-indo.js",
