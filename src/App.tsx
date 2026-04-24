@@ -243,7 +243,11 @@ function groupScripts(scripts: Script[], sort: SortOption): { key: string; label
       if (!map.has(label)) map.set(label, []);
       map.get(label)!.push(s);
     }
-    return Array.from(map.entries()).map(([label, items]) => ({ key: label, label, items }));
+    return Array.from(map.entries()).map(([label, items]) => ({
+      key: label,
+      label,
+      items: [...items].sort((a, b) => parseInt(b.id) - parseInt(a.id)), // ← tambah ini
+    }));
   } else {
     const sorted = [...scripts].sort((a, b) =>
       sort === "a-z" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
@@ -831,7 +835,12 @@ function Submit() {
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-lg font-bold text-white font-pixel">Manage Scripts</h1>
+            <h1 className="text-lg font-bold text-white font-pixel">
+  Manage Scripts
+  {!scriptsLoading && (
+    <span className="ml-2 text-sm font-mono text-white/30">({scripts.length} files)</span>
+  )}
+</h1>
             <SessionBadge onExpire={handleExpire} />
           </div>
 
