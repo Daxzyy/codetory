@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "34",
-    "name": "Yt Image",
-    "fileName": "yt-image.js",
-    "explanation": "Sulit dijelaskan intinya untuk download PP, banner, thumbnail YouTube.",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "35",
     "name": "Kusonime",
     "fileName": "kusonime.js",
