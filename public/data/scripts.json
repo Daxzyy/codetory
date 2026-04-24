@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "30",
-    "name": "Chatex Ai",
-    "fileName": "chatex-ai.js",
-    "explanation": "Intinya bagus banget, kalian bisa coba",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "31",
     "name": "Search Server Minecraft",
     "fileName": "search-mcserver.js",
