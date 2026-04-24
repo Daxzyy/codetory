@@ -12,7 +12,7 @@ import { decryptData } from "./lib/crypto";
 const LARGE_FILE_THRESHOLD = 200 * 1024;
 const LINES_PER_CHUNK = 100;
 const PREVIEW_LINES = 30;
-const SESSION_DURATION = 5 * 60 * 1000;
+const SESSION_DURATION = 10 * 60 * 1000;
 const SESSION_KEY = "codetory_session_expiry";
 
 const EXT_MAP: Record<string, string> = {
