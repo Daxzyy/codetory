@@ -180,15 +180,6 @@
     "date": "2026-04-23"
   },
   {
-    "id": "27",
-    "name": "Youtube Downloader",
-    "fileName": "ssyoutube-ytdl.js",
-    "explanation": "Youtube Downloader. Support mp3 dan mp4",
-    "language": "JavaScript",
-    "author": "givy",
-    "date": "2026-04-24"
-  },
-  {
     "id": "28",
     "name": "Anichin",
     "fileName": "anichin-v1.js",
