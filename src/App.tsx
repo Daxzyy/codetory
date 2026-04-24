@@ -224,10 +224,10 @@ function GroupSeparator({ label }: { label: string }) {
   return (
     <div className="col-span-full flex items-center gap-3 py-1 mt-2 first:mt-0">
       <span
-        className="text-[15px] text-white/55 select-none"
-        style={{ fontFamily: "'Ubuntu Mono', monospace" }}
+        className="text-[15px] text-white/70 select-none font-pixel"
+        style={{ fontFamily: "'Pixelify Sans', system-ui, sans-serif" }}
       >
-        # {label}
+        &gt;&gt; {label}
       </span>
       <div className="h-px flex-1 bg-white/[0.12]" />
     </div>
@@ -262,7 +262,7 @@ function Home() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState<SortOption>("newest");
+  const [sort, setSort] = useState<SortOption>("a-z");
   const [langFilter, setLangFilter] = useState("all");
 
   useEffect(() => {
