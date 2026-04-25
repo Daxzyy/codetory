@@ -1067,6 +1067,7 @@ function Submit() {
 }
 
 function Stats() {
+  const UM = "'Ubuntu Mono', monospace";
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -1119,7 +1120,7 @@ function Stats() {
         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
         back to home
       </Link>
-      <p className="text-[11px] text-neutral-600 mb-6 font-mono tracking-wider">codetory / stats</p>
+      <h1 className="text-xl font-bold tracking-tight mb-6 text-white font-pixel">codetory / stats</h1>
 
       {loading ? (
         <div className="space-y-3">
@@ -1136,8 +1137,8 @@ function Stats() {
             ].map(c => (
               <div key={c.label} className="border border-white/10 bg-white/[0.03] rounded-lg px-4 py-3">
                 <p className="text-[11px] text-neutral-500 mb-1.5 uppercase tracking-wider">{c.label}</p>
-                <p className="text-2xl font-medium leading-none mb-1" style={{ color: c.green ? "#22c55e" : "white" }}>{c.val}</p>
-                <p className="text-[11px] text-neutral-500">{c.sub}</p>
+                <p className="text-2xl font-medium leading-none mb-1" style={{ color: c.green ? "#22c55e" : "white", fontFamily: UM }}>{c.val}</p>
+                <p className="text-[11px] text-neutral-400" style={{ fontFamily: UM }}>{c.sub}</p>
               </div>
             ))}
           </div>
@@ -1152,11 +1153,11 @@ function Stats() {
                 const pct = Math.max((count / maxCount) * 100, 3);
                 return (
                   <div key={date} className="flex items-center gap-3">
-                    <span className="font-mono flex-shrink-0 text-right text-xs" style={{ width: 52, color: isToday ? "white" : "#666", fontWeight: isToday ? 500 : 400 }}>
+                    <span className="flex-shrink-0 text-right text-xs" style={{ width: 52, color: isToday ? "white" : "#888", fontWeight: isToday ? 500 : 400, fontFamily: UM }}>
                       {fmt(date)}
                     </span>
                     <div className="flex items-center rounded px-2" style={{ width: `${pct}%`, minWidth: 28, height: 20, background: isToday ? "rgba(34,197,94,0.12)" : isRecord ? "rgba(59,130,246,0.13)" : "rgba(59,130,246,0.08)" }}>
-                      <span className="text-xs font-mono whitespace-nowrap" style={{ color: isToday ? "#22c55e" : isRecord ? "#93c5fd" : "#666" }}>
+                      <span className="text-xs whitespace-nowrap" style={{ color: isToday ? "#22c55e" : isRecord ? "#93c5fd" : "#888", fontFamily: UM }}>
                         {isRecord && !isToday ? `${count} — terbanyak` : count}
                       </span>
                     </div>
@@ -1167,9 +1168,9 @@ function Stats() {
                 <>
                   <hr className="border-none border-t border-white/10 my-1" />
                   <div className="flex items-center gap-3">
-                    <span className="font-mono flex-shrink-0 text-right text-xs" style={{ width: 52, color: "white", fontWeight: 500 }}>{fmt(today)}</span>
+                    <span className="flex-shrink-0 text-right text-xs" style={{ width: 52, color: "white", fontWeight: 500, fontFamily: UM }}>{fmt(today)}</span>
                     <div className="flex items-center rounded px-2" style={{ width: "3%", minWidth: 32, height: 20, background: "rgba(34,197,94,0.1)" }}>
-                      <span className="text-xs font-mono" style={{ color: "#22c55e" }}>0</span>
+                      <span className="text-xs" style={{ color: "#22c55e", fontFamily: UM }}>0</span>
                     </div>
                   </div>
                 </>
@@ -1182,11 +1183,11 @@ function Stats() {
             <div className="flex flex-col gap-2">
               {langEntries.map(([lang, count]) => (
                 <div key={lang} className="flex items-center gap-3">
-                  <span className="text-right flex-shrink-0 text-xs text-neutral-400" style={{ width: 80 }}>{lang}</span>
+                  <span className="text-right flex-shrink-0 text-xs text-neutral-400" style={{ width: 80, fontFamily: UM }}>{lang}</span>
                   <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)", border: "0.5px solid rgba(255,255,255,0.08)" }}>
                     <div className="h-full rounded-full" style={{ width: `${(count / maxLang) * 100}%`, background: langColors[lang] || "#aaa" }} />
                   </div>
-                  <span className="text-[11px] text-neutral-500 font-mono flex-shrink-0" style={{ width: 24 }}>{count}</span>
+                  <span className="text-[11px] text-neutral-400 flex-shrink-0" style={{ width: 24, fontFamily: UM }}>{count}</span>
                 </div>
               ))}
             </div>
