@@ -80,6 +80,24 @@ function truncate(str: string, max: number): string {
   return chars.slice(0, max).join('') + '...';
 }
 
+function renderWithLinks(text: string): React.ReactNode[] {
+  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    if (match[1] && match[2]) {
+      parts.push(<a key={match.index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">{match[1]}</a>);
+    } else if (match[3]) {
+      parts.push(<a key={match.index} href={match[3]} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">{match[3]}</a>);
+    }
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
+
 function LangIcon({ language, className = "w-4 h-4" }: { language?: string; className?: string }) {
   const lang = (language || "").toLowerCase();
   const map: Record<string, string> = {
@@ -508,8 +526,10 @@ function ViewScript() {
             </div>
             <h1 className="text-sm font-bold mb-0.5 break-all text-white/90">{fileName}</h1>
             {scriptData?.explanation && (
-              <p className="text-xs text-neutral-400 font-medium leading-relaxed mt-2">{scriptData.explanation}</p>
-            )}
+  <p className="text-xs text-neutral-400 font-medium leading-relaxed mt-2">
+    {renderWithLinks(scriptData.explanation)}
+  </p>
+)}
             {!loading && code && (
               <p className="text-[10px] text-neutral-400 font-mono tracking-tight mt-3">
                 {formatSize(new Blob([code]).size)}
