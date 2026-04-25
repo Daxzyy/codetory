@@ -1120,7 +1120,7 @@ function Stats() {
         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
         back to home
       </Link>
-      <h1 className="text-xl font-bold tracking-tight mb-6 text-white font-pixel">codetory / stats</h1>
+      <h1 className="text-xl font-bold tracking-tight mb-6 text-white font-pixel">codetory <span className="text-white/10">/</span> stats</h1>
 
       {loading ? (
         <div className="space-y-3">
