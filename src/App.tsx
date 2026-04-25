@@ -81,7 +81,7 @@ function truncate(str: string, max: number): string {
 }
 
 function renderWithLinks(text: string): React.ReactNode[] {
-  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)/g;
+  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)|(\b[\w-]+\.(?:com|id|my\.id|net|org|io|app|tm|dev|co|info|site|online)\b)/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match;
@@ -90,8 +90,14 @@ function renderWithLinks(text: string): React.ReactNode[] {
     if (match[1] && match[2]) {
       parts.push(<a key={match.index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">{match[1]}</a>);
     } else if (match[3]) {
-      parts.push(<a key={match.index} href={match[3]} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">{match[3]}</a>);
-    }
+  parts.push(
+    <a key={match.index} href={match[3]} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">{match[3]}</a>
+  );
+} else if (match[4]) {
+  parts.push(
+    <a key={match.index} href={"https://" + match[4]} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">{match[4]}</a>
+  );
+}
     lastIndex = regex.lastIndex;
   }
   if (lastIndex < text.length) parts.push(text.slice(lastIndex));
