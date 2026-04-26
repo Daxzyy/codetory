@@ -425,7 +425,7 @@ function Home() {
                       <span className="text-[10px] font-mono border border-white/5 px-2 py-0.5 bg-white/[0.12] flex-shrink-0 ml-2 text-white/50">{script.language}</span>
                     </div>
                     <div className="flex items-start justify-between gap-3 flex-1">
-                      <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1">{truncate(script.explanation, 45)}</p>
+                      <p className="text-xs text-neutral-400 font-medium leading-relaxed tracking-tight flex-1 break-all">{truncate(script.explanation, 45)}</p>
                       <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-white transition-all flex-shrink-0 mt-0.5" />
                     </div>
                   </motion.div>
@@ -532,9 +532,9 @@ function ViewScript() {
             </div>
             <h1 className="text-sm font-bold mb-0.5 break-all text-white/90">{fileName}</h1>
             {scriptData?.explanation && (
-  <p className="text-xs text-neutral-400 font-medium leading-relaxed mt-2">
-    {renderWithLinks(scriptData.explanation)}
-  </p>
+  <p className="text-xs text-neutral-400 font-medium leading-relaxed mt-2 break-all">
+  {renderWithLinks(scriptData.explanation)}
+</p>
 )}
             {!loading && code && (
               <p className="text-[10px] text-neutral-400 font-mono tracking-tight mt-3">
