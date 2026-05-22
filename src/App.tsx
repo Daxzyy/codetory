@@ -711,7 +711,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                     <div className="text-[11px] font-mono overflow-hidden relative group/code">
                       <button
                         onClick={handleCopy}
-                        className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-white/50 hover:text-white bg-[#1e1e1e] hover:bg-[#2a2a2a] border border-white/20 hover:border-white/40 rounded transition-all opacity-0 group-hover/code:opacity-100 shadow-md"
+                        className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-white/40 hover:text-white bg-[#252525] hover:bg-[#2e2e2e] border border-white/15 hover:border-white/35 rounded transition-all shadow-md"
                       >
                         {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
                         {copied ? "Copied" : "Copy"}
@@ -744,7 +744,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                     <div className="relative group/output">
                       <button
                         onClick={() => { navigator.clipboard.writeText(runOutput!); }}
-                        className="absolute top-0 right-0 z-10 flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-white/50 hover:text-white bg-[#1e1e1e] hover:bg-[#2a2a2a] border border-white/20 hover:border-white/40 rounded transition-all opacity-0 group-hover/output:opacity-100 shadow-md"
+                        className="absolute top-0 right-0 z-10 flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-white/40 hover:text-white bg-[#252525] hover:bg-[#2e2e2e] border border-white/15 hover:border-white/35 rounded transition-all shadow-md"
                       >
                         <Copy className="w-3 h-3" />
                         Copy
