@@ -439,5 +439,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-05-03"
+  },
+  {
+    "id": "50",
+    "name": "Nsfw Checker",
+    "fileName": "nsfw-checker.js",
+    "explanation": "buat deteksi gambar 18+",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-05-22"
   }
 ]
