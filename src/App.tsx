@@ -496,7 +496,18 @@ function ViewScript() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-const [running, setRunning] = useState(false);
+const overflowRef = useRef<HTMLDivElement>(null);
+  const [showOverflow, setShowOverflow] = useState(false);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (overflowRef.current && !overflowRef.current.contains(e.target as Node)) setShowOverflow(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const [running, setRunning] = useState(false);
   const [runOutput, setRunOutput] = useState<string | null>(null);
   const [runInput, setRunInput] = useState<string>("");
   const [showRun, setShowRun] = useState(false);
@@ -595,12 +606,17 @@ const [running, setRunning] = useState(false);
         <div className="lg:w-4/5">
           <div className="border border-white/10 rounded-lg overflow-hidden" style={{ background: '#161616' }}>
             <div className="flex items-center justify-between bg-white/[0.02] border-b border-white/5">
-              <div className="flex items-center border-b border-white/10 -mb-px">
+              <div className="flex items-center -mb-px">
                 <button
                   onClick={() => setShowRun(false)}
-                  className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all ${!showRun ? "text-white border-b border-white" : "text-white/30 hover:text-white/60"}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all ${!showRun ? "text-white border-b border-white" : "text-white/30 hover:text-white/60"}`}
                 >
                   Code
+                  {!loading && (
+                    <span className="text-[8px] font-mono px-1 py-0.5 bg-white/5 border border-white/10 text-white/30 leading-none">
+                      {code.split('\n').length}
+                    </span>
+                  )}
                 </button>
                 {scriptData?.run && (
                   <button
@@ -612,23 +628,56 @@ const [running, setRunning] = useState(false);
                 )}
               </div>
               <div className="flex items-center gap-0 px-1">
-                <span className="text-[9px] font-mono text-neutral-500 px-2">
-                  {loading ? "..." : `${code.split('\n').length} lines`}
-                </span>
-                <span className="text-white/10 text-xs">|</span>
-                <a href={"/raw/" + fileName} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
-                  <ExternalLink className="w-3 h-3" /> Raw
-                </a>
-                <span className="text-white/10 text-xs">|</span>
-                <button onClick={handleCopy} className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
-                  {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3" />}
-                  {copied ? "Copied" : "Copy"}
-                </button>
-                <span className="text-white/10 text-xs">|</span>
-                <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
-                  <Download className="w-3 h-3" /> Download
-                </button>
+                <div className="hidden sm:flex items-center gap-0">
+                  <a href={"/raw/" + fileName} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
+                    <ExternalLink className="w-3 h-3" /> Raw
+                  </a>
+                  <span className="text-white/10 text-xs">|</span>
+                  <button onClick={handleCopy} className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
+                    {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3" />}
+                    {copied ? "Copied" : "Copy"}
+                  </button>
+                  <span className="text-white/10 text-xs">|</span>
+                  <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
+                    <Download className="w-3 h-3" /> Download
+                  </button>
+                </div>
+                <div className="sm:hidden relative" ref={overflowRef}>
+                  <button
+                    onClick={() => setShowOverflow(v => !v)}
+                    className="flex items-center px-3 py-1 text-white/30 hover:text-white transition-all"
+                  >
+                    <i className="ph-bold ph-dots-three text-base" />
+                  </button>
+                  <AnimatePresence>
+                    {showOverflow && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                        transition={{ duration: 0.1 }}
+                        className="absolute right-0 top-full mt-1 border border-white/10 bg-[#191919] z-50 min-w-[120px] shadow-2xl overflow-hidden"
+                        style={{ borderRadius: 6 }}
+                      >
+                        <a href={"/raw/" + fileName} target="_blank" rel="noopener noreferrer"
+                          onClick={() => setShowOverflow(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
+                          <ExternalLink className="w-3 h-3" /> Raw
+                        </a>
+                        <button onClick={() => { handleCopy(); setShowOverflow(false); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
+                          {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3" />}
+                          {copied ? "Copied" : "Copy"}
+                        </button>
+                        <button onClick={() => { handleDownload(); setShowOverflow(false); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
+                          <Download className="w-3 h-3" /> Download
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
             <AnimatePresence mode="wait">
