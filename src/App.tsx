@@ -594,24 +594,28 @@ const [running, setRunning] = useState(false);
         </div>
         <div className="lg:w-4/5">
           <div className="border border-white/10 rounded-lg overflow-hidden" style={{ background: '#161616' }}>
-            <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
-              <div className="flex items-center gap-0">
+            <div className="flex items-center justify-between bg-white/[0.02] border-b border-white/5">
+              <div className="flex items-center border-b border-white/10 -mb-px">
                 <button
                   onClick={() => setShowRun(false)}
-                  className={`px-3 py-1 text-[10px] font-bold tracking-tight transition-all ${!showRun ? "text-white border-b border-white" : "text-white/30 hover:text-white/60"}`}
+                  className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all ${!showRun ? "text-white border-b border-white" : "text-white/30 hover:text-white/60"}`}
                 >
                   Code
                 </button>
                 {scriptData?.run && (
                   <button
                     onClick={() => { setShowRun(true); if (!runOutput) handleRun(); }}
-                    className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold tracking-tight transition-all ${showRun ? "text-green-400 border-b border-green-400" : "text-white/30 hover:text-green-400"}`}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all ${showRun ? "text-green-400 border-b border-green-400" : "text-white/30 hover:text-green-400"}`}
                   >
                     <i className="ph-bold ph-play text-[10px]" /> Try
                   </button>
                 )}
               </div>
-              <div className="flex items-center gap-0">
+              <div className="flex items-center gap-0 px-1">
+                <span className="text-[9px] font-mono text-neutral-500 px-2">
+                  {loading ? "..." : `${code.split('\n').length} lines`}
+                </span>
+                <span className="text-white/10 text-xs">|</span>
                 <a href={"/raw/" + fileName} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
                   <ExternalLink className="w-3 h-3" /> Raw
