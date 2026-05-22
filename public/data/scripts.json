@@ -452,5 +452,14 @@
     "date": "2026-05-22",
     "run": true,
     "defaultInput": "358180005339211"
+  },
+  {
+    "id": "52",
+    "name": "Roblox Stalk",
+    "fileName": "rblx-stalk.js",
+    "explanation": "",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-05-22"
   }
 ]
