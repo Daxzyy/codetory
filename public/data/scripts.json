@@ -135,15 +135,6 @@
     "date": "2026-04-20"
   },
   {
-    "id": "16",
-    "name": "Kumpulan 100 Ribu Kata KBBI",
-    "fileName": "kamus.json",
-    "explanation": "Kumpulan 100 ribu kata dari Kamus Besar Bahasa Indonesia",
-    "language": "JSON",
-    "author": "Givy",
-    "date": "2026-04-20"
-  },
-  {
     "id": "17",
     "name": "SeeGore Video",
     "fileName": "seegore.js",
