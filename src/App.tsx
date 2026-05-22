@@ -8,6 +8,7 @@ import {
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { decryptData } from "./lib/crypto";
+import * as Babel from '@babel/standalone';
 
 const LARGE_FILE_THRESHOLD = 200 * 1024;
 const LINES_PER_CHUNK = 100;
@@ -508,16 +509,17 @@ const [running, setRunning] = useState(false);
     setRunOutput(null);
     try {
       const langId = LANG_ID[scriptData.language] || 63;
-      // Wrap code: ganti baris terakhir `return await fn(...)` jadi di-call dengan process.argv[2]
-      const runnable = code.replace(
-        /^(return await .+)$/m,
-        `const __input = process.argv[2];\n$1`.replace('return await ', '')
-      );
+      let runnableCode = code;
+      try {
+        runnableCode = Babel.transform(code, {
+          presets: [['env', { targets: { node: '12' } }]],
+        }).code ?? code;
+      } catch (_) {}
       const submitRes = await fetch('https://ce.judge0.com/submissions?wait=true', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          source_code: code,
+            source_code: runnableCode,
           language_id: langId,
           stdin: runInput || scriptData.defaultInput || '',
           cpu_time_limit: 10,
