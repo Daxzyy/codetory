@@ -595,9 +595,22 @@ const [running, setRunning] = useState(false);
         <div className="lg:w-4/5">
           <div className="border border-white/10 rounded-lg overflow-hidden" style={{ background: '#161616' }}>
             <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
-              <span className="text-[9px] font-mono text-neutral-500 tracking-tight">
-                {loading ? "..." : `${code.split('\n').length} lines`}
-              </span>
+              <div className="flex items-center gap-0">
+                <button
+                  onClick={() => setShowRun(false)}
+                  className={`px-3 py-1 text-[10px] font-bold tracking-tight transition-all ${!showRun ? "text-white border-b border-white" : "text-white/30 hover:text-white/60"}`}
+                >
+                  Code
+                </button>
+                {scriptData?.run && (
+                  <button
+                    onClick={() => { setShowRun(true); if (!runOutput) handleRun(); }}
+                    className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold tracking-tight transition-all ${showRun ? "text-green-400 border-b border-green-400" : "text-white/30 hover:text-green-400"}`}
+                  >
+                    <i className="ph-bold ph-play text-[10px]" /> Try
+                  </button>
+                )}
+              </div>
               <div className="flex items-center gap-0">
                 <a href={"/raw/" + fileName} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
@@ -612,78 +625,54 @@ const [running, setRunning] = useState(false);
                 <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
                   <Download className="w-3 h-3" /> Download
                 </button>
-                {scriptData?.run && (
-                  <>
-                    <span className="text-white/10 text-xs">|</span>
-                    <button onClick={() => setShowRun(v => !v)} className={`flex items-center gap-1.5 px-3 py-1 transition-all text-[10px] font-bold tracking-tight ${showRun ? "text-green-400" : "text-white/30 hover:text-green-400"}`}>
-                      <i className="ph-bold ph-play text-[11px]" /> Run
-                    </button>
-                  </>
-                )}
               </div>
             </div>
-            <div className="relative">
-              {loading ? (
-                <div className="p-4 space-y-2">
-                  {[1,2,3,4,5].map(i => (
-                    <div key={i} className="h-3 bg-white/5 animate-pulse" style={{ width: `${Math.random() * 40 + 60}%` }} />
-                  ))}
-                </div>
-              ) : isLarge ? (
-                <LargeFileViewer code={code} language={scriptData?.language?.toLowerCase() || "text"} />
+            <AnimatePresence mode="wait">
+              {!showRun ? (
+                <motion.div key="code" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
+                  {loading ? (
+                    <div className="p-4 space-y-2">
+                      {[1,2,3,4,5].map(i => (
+                        <div key={i} className="h-3 bg-white/5 animate-pulse" style={{ width: `${Math.random() * 40 + 60}%` }} />
+                      ))}
+                    </div>
+                  ) : isLarge ? (
+                    <LargeFileViewer code={code} language={scriptData?.language?.toLowerCase() || "text"} />
+                  ) : (
+                    <div className="text-[11px] font-mono overflow-hidden">
+                      <SyntaxHighlighter
+                        language={scriptData?.language?.toLowerCase() || "javascript"}
+                        style={oneDark}
+                        customStyle={{ margin: 0, padding: '1rem', background: 'transparent', fontSize: 'inherit', lineHeight: '1.4' }}
+                        codeTagProps={{ style: { fontFamily: 'inherit' } }}
+                        showLineNumbers startingLineNumber={1}
+                      >
+                        {code}
+                      </SyntaxHighlighter>
+                    </div>
+                  )}
+                </motion.div>
               ) : (
-                <div className="text-[11px] font-mono overflow-hidden">
-                  <SyntaxHighlighter
-                    language={scriptData?.language?.toLowerCase() || "javascript"}
-                    style={oneDark}
-                    customStyle={{ margin: 0, padding: '1rem', background: 'transparent', fontSize: 'inherit', lineHeight: '1.4' }}
-                    codeTagProps={{ style: { fontFamily: 'inherit' } }}
-                    showLineNumbers startingLineNumber={1}
-                  >
-                    {code}
-                  </SyntaxHighlighter>
-                </div>
+                <motion.div key="try" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}
+                  className="p-4 min-h-[160px]">
+                  {running && (
+                    <div className="flex items-center gap-2 text-white/30">
+                      <i className="ph-bold ph-circle-notch animate-spin text-sm" />
+                      <span className="text-[11px] font-mono">executing...</span>
+                    </div>
+                  )}
+                  {!running && runOutput === null && (
+                    <p className="text-[10px] font-mono text-white/15 select-none">waiting...</p>
+                  )}
+                  {!running && runOutput !== null && (
+                    <pre className="text-[11px] font-mono text-neutral-300 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-96">
+                      {runOutput}
+                    </pre>
+                  )}
+                </motion.div>
               )}
-            </div>
+            </AnimatePresence>
           </div>
-          {scriptData?.run && showRun && (
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              className="mt-2 border border-white/10 overflow-hidden"
-              style={{ background: '#161616' }}
-            >
-              <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/5 bg-white/[0.02]">
-                <span className="text-[9px] font-mono text-neutral-500 tracking-tight flex items-center gap-1.5">
-                  <i className="ph-bold ph-terminal text-[11px]" /> terminal
-                </span>
-                <button onClick={handleRun} disabled={running}
-                  className="flex items-center gap-1.5 px-3 py-1 border border-green-500/20 bg-green-500/5 hover:bg-green-500/15 text-green-400 text-[10px] font-bold transition-all disabled:opacity-40">
-                  {running
-                    ? <><i className="ph-bold ph-circle-notch animate-spin text-[11px]" /> running</>
-                    : <><i className="ph-bold ph-play text-[11px]" /> run</>}
-                </button>
-              </div>
-              <div className="p-3 min-h-[80px]">
-                {!runOutput && !running && (
-                  <p className="text-[10px] font-mono text-white/15 select-none">
-                    press run to execute
-                  </p>
-                )}
-                {running && (
-                  <p className="text-[10px] font-mono text-white/30 animate-pulse">
-                    executing...
-                  </p>
-                )}
-                {runOutput !== null && !running && (
-                  <pre className="text-[11px] font-mono text-neutral-300 whitespace-pre-wrap max-h-72 overflow-y-auto leading-relaxed">
-                    {runOutput}
-                  </pre>
-                )}
-              </div>
-            </motion.div>
-          )}
         </div>
       </div>
     </div>
