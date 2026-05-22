@@ -615,8 +615,8 @@ const [running, setRunning] = useState(false);
                 {scriptData?.run && (
                   <>
                     <span className="text-white/10 text-xs">|</span>
-                    <button onClick={() => setShowRun(v => !v)} className="flex items-center gap-1.5 px-3 py-1 text-green-400/60 hover:text-green-400 transition-all text-[10px] font-bold tracking-tight">
-                      ▶ Run
+                    <button onClick={() => setShowRun(v => !v)} className={`flex items-center gap-1.5 px-3 py-1 transition-all text-[10px] font-bold tracking-tight ${showRun ? "text-green-400" : "text-white/30 hover:text-green-400"}`}>
+                      <i className="ph-bold ph-play text-[11px]" /> Run
                     </button>
                   </>
                 )}
@@ -647,28 +647,42 @@ const [running, setRunning] = useState(false);
             </div>
           </div>
           {scriptData?.run && showRun && (
-            <div className="mt-3 border border-white/10 bg-white/[0.02] p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <input
-                  value={runInput}
-                  onChange={e => setRunInput(e.target.value)}
-                  placeholder={scriptData.defaultInput || "Input..."}
-                  className="flex-1 bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-white/30 transition-all"
-                />
-                <button
-                  onClick={handleRun}
-                  disabled={running}
-                  className="flex items-center gap-1.5 px-4 py-1.5 border border-green-500/30 bg-green-500/10 hover:bg-green-500/20 text-green-400 text-xs font-bold transition-all disabled:opacity-50"
-                >
-                  {running ? <><Loader2 className="w-3 h-3 animate-spin" /> Running...</> : '▶ Run'}
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              className="mt-2 border border-white/10 overflow-hidden"
+              style={{ background: '#161616' }}
+            >
+              <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/5 bg-white/[0.02]">
+                <span className="text-[9px] font-mono text-neutral-500 tracking-tight flex items-center gap-1.5">
+                  <i className="ph-bold ph-terminal text-[11px]" /> terminal
+                </span>
+                <button onClick={handleRun} disabled={running}
+                  className="flex items-center gap-1.5 px-3 py-1 border border-green-500/20 bg-green-500/5 hover:bg-green-500/15 text-green-400 text-[10px] font-bold transition-all disabled:opacity-40">
+                  {running
+                    ? <><i className="ph-bold ph-circle-notch animate-spin text-[11px]" /> running</>
+                    : <><i className="ph-bold ph-play text-[11px]" /> run</>}
                 </button>
               </div>
-              {runOutput !== null && (
-                <pre className="text-[11px] font-mono text-neutral-300 bg-black/30 p-3 overflow-x-auto whitespace-pre-wrap border border-white/5 max-h-80 overflow-y-auto">
-                  {runOutput}
-                </pre>
-              )}
-            </div>
+              <div className="p-3 min-h-[80px]">
+                {!runOutput && !running && (
+                  <p className="text-[10px] font-mono text-white/15 select-none">
+                    press run to execute
+                  </p>
+                )}
+                {running && (
+                  <p className="text-[10px] font-mono text-white/30 animate-pulse">
+                    executing...
+                  </p>
+                )}
+                {runOutput !== null && !running && (
+                  <pre className="text-[11px] font-mono text-neutral-300 whitespace-pre-wrap max-h-72 overflow-y-auto leading-relaxed">
+                    {runOutput}
+                  </pre>
+                )}
+              </div>
+            </motion.div>
           )}
         </div>
       </div>
