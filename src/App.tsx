@@ -646,7 +646,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                 )}
                 <div className="hidden sm:flex items-center">
                   <a
-                    href={\`/raw/\${fileName}\`} target="_blank" rel="noopener noreferrer"
+                    href={`/raw/${fileName}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 px-2.5 py-1.5 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight rounded hover:bg-white/[0.04]"
                   >
                     <ExternalLink className="w-3 h-3" /> Raw
@@ -684,7 +684,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                         className="absolute right-0 top-full mt-1 border border-white/10 bg-[#191919] z-50 min-w-[120px] shadow-2xl overflow-hidden"
                         style={{ borderRadius: 6 }}
                       >
-                        <a href={\`/raw/\${fileName}\`} target="_blank" rel="noopener noreferrer"
+                        <a href={`/raw/${fileName}`} target="_blank" rel="noopener noreferrer"
                           onClick={() => setShowOverflow(false)}
                           className="flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
                           <ExternalLink className="w-3 h-3" /> Raw
