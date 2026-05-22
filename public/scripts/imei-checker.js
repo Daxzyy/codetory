@@ -1,30 +1,36 @@
-const axios = require('axios')
+const https = require('https')
+
+function httpsGet(url) {
+  return new Promise((resolve, reject) => {
+    const opts = new URL(url)
+    https.get({
+      hostname: opts.hostname,
+      path: opts.pathname + opts.search,
+      headers: {
+        'User-Agent': 'okhttp/4.9.2',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'identity'
+      }
+    }, (res) => {
+      let data = ''
+      res.on('data', c => data += c)
+      res.on('end', () => resolve(JSON.parse(data)))
+    }).on('error', reject)
+  })
+}
 
 async function imeiCheck(imei) {
   try {
-    const { data } = await axios.get(
-      `https://dash.imei.info/api/check/0/?imei=${encodeURIComponent(imei)}&API_KEY=f43f0d0c-27b0-408a-abd0-585fabea6adf`,
-      {
-        headers: {
-          'User-Agent': 'okhttp/4.9.2',
-          'Accept': 'application/json, text/plain, */*',
-          'Accept-Encoding': 'gzip'
-        }
-      }
+    const data = await httpsGet(
+      `https://dash.imei.info/api/check/0/?imei=${encodeURIComponent(imei)}&API_KEY=f43f0d0c-27b0-408a-abd0-585fabea6adf`
     )
 
     if (!data?.result?.header) {
-      return {
-        success: false,
-        creator: '𝖸𝖺𝖻𝖾𝗌',
-        error: 'Invalid response'
-      }
+      return { success: false, error: 'Invalid response' }
     }
 
     const { header, items } = data.result
-
     const toKey = (str) => str.trim().replace(/\s+/g, '_')
-
     const formatBool = (val) => {
       if (val === 'True') return 'Support'
       if (val === 'False') return 'Not support'
@@ -40,24 +46,16 @@ async function imeiCheck(imei) {
         currentGroup = toKey(items[index].title)
         result[currentGroup] = {}
         index++
-
         while (index < items.length && items[index].role !== 'header') {
           if (items[index].role === 'item') {
             result[currentGroup][toKey(items[index].title)] =
-              currentGroup === 'Network'
-                ? formatBool(items[index].content)
-                : items[index].content
+              currentGroup === 'Network' ? formatBool(items[index].content) : items[index].content
           }
-
-          if (
-            items[index].role === 'button' &&
-            items[index].title === 'Full device specification'
-          ) {
+          if (items[index].role === 'button' && items[index].title === 'Full device specification') {
             result.full_spec = items[index].content
             index = items.length
             break
           }
-
           index++
         }
       } else {
@@ -67,7 +65,6 @@ async function imeiCheck(imei) {
 
     return {
       success: true,
-      creator: '𝖸𝖺𝖻𝖾𝗌',
       results: {
         imei: header.imei,
         brand: header.brand,
@@ -77,12 +74,9 @@ async function imeiCheck(imei) {
       }
     }
   } catch (err) {
-    return {
-      success: false,
-      creator: '𝖸𝖺𝖻𝖾𝗌',
-      error: err.message
-    }
+    return { success: false, error: err.message }
   }
 }
 
-return await imeiCheck('358180005339211')
+const input = process.argv[2] || '358180005339211'
+imeiCheck(input).then(r => console.log(JSON.stringify(r, null, 2)))
