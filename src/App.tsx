@@ -495,6 +495,47 @@ function ViewScript() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+const [running, setRunning] = useState(false);
+  const [runOutput, setRunOutput] = useState<string | null>(null);
+  const [runInput, setRunInput] = useState<string>("");
+  const [showRun, setShowRun] = useState(false);
+
+  const LANG_ID: Record<string, number> = { JavaScript: 63, TypeScript: 74, Python: 71 };
+
+  const handleRun = async () => {
+    if (!code || !scriptData) return;
+    setRunning(true);
+    setRunOutput(null);
+    try {
+      const langId = LANG_ID[scriptData.language] || 63;
+      // Wrap code: ganti baris terakhir `return await fn(...)` jadi di-call dengan process.argv[2]
+      const runnable = code.replace(
+        /^(return await .+)$/m,
+        `const __input = process.argv[2];\n$1`.replace('return await ', '')
+      );
+      const submitRes = await fetch('https://ce.judge0.com/submissions?wait=true', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_code: code,
+          language_id: langId,
+          stdin: runInput || scriptData.defaultInput || '',
+          cpu_time_limit: 10,
+          wall_time_limit: 15,
+          enable_network: true,
+        })
+      });
+      const result = await submitRes.json();
+      if (result.stdout) setRunOutput(result.stdout);
+      else if (result.stderr) setRunOutput('STDERR:\n' + result.stderr);
+      else if (result.compile_output) setRunOutput('Compile Error:\n' + result.compile_output);
+      else setRunOutput(JSON.stringify(result, null, 2));
+    } catch (e: any) {
+      setRunOutput('Error: ' + e.message);
+    }
+    setRunning(false);
+  };
+
   const handleDownload = () => {
     const element = document.createElement("a");
     const file = new Blob([code], { type: "text/plain" });
@@ -569,6 +610,14 @@ function ViewScript() {
                 <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight">
                   <Download className="w-3 h-3" /> Download
                 </button>
+                {scriptData?.run && (
+                  <>
+                    <span className="text-white/10 text-xs">|</span>
+                    <button onClick={() => setShowRun(v => !v)} className="flex items-center gap-1.5 px-3 py-1 text-green-400/60 hover:text-green-400 transition-all text-[10px] font-bold tracking-tight">
+                      ▶ Run
+                    </button>
+                  </>
+                )}
               </div>
             </div>
             <div className="relative">
@@ -595,6 +644,30 @@ function ViewScript() {
               )}
             </div>
           </div>
+          {scriptData?.run && showRun && (
+            <div className="mt-3 border border-white/10 bg-white/[0.02] p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <input
+                  value={runInput}
+                  onChange={e => setRunInput(e.target.value)}
+                  placeholder={scriptData.defaultInput || "Input..."}
+                  className="flex-1 bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-white/30 transition-all"
+                />
+                <button
+                  onClick={handleRun}
+                  disabled={running}
+                  className="flex items-center gap-1.5 px-4 py-1.5 border border-green-500/30 bg-green-500/10 hover:bg-green-500/20 text-green-400 text-xs font-bold transition-all disabled:opacity-50"
+                >
+                  {running ? <><Loader2 className="w-3 h-3 animate-spin" /> Running...</> : '▶ Run'}
+                </button>
+              </div>
+              {runOutput !== null && (
+                <pre className="text-[11px] font-mono text-neutral-300 bg-black/30 p-3 overflow-x-auto whitespace-pre-wrap border border-white/5 max-h-80 overflow-y-auto">
+                  {runOutput}
+                </pre>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
