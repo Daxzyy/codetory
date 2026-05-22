@@ -631,7 +631,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                         : "text-white/30 hover:text-green-400 hover:bg-white/[0.04]"
                     }`}
                   >
-                    <i className="ph-bold ph-play text-[10px]" />
+                    <i className="ph-bold ph-terminal-window text-[11px]" />
                     Try
                   </button>
                 )}
@@ -639,12 +639,12 @@ const overflowRef = useRef<HTMLDivElement>(null);
 
               {/* Right: line count + actions */}
               <div className="flex items-center gap-2">
-                {!loading && (
+                {!loading && !showRun && (
                   <span className="text-[11px] font-mono text-white/20 tabular-nums select-none mr-1">
                     {code.split('\n').length} lines
                   </span>
                 )}
-                <div className="hidden sm:flex items-center">
+                {!showRun && <div className="hidden sm:flex items-center">
                   <a
                     href={`/raw/${fileName}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 px-2.5 py-1.5 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight rounded hover:bg-white/[0.04]"
@@ -658,10 +658,10 @@ const overflowRef = useRef<HTMLDivElement>(null);
                   >
                     <Download className="w-3 h-3" /> Download
                   </button>
-                </div>
+                </div>}
 
                 {/* Mobile overflow menu */}
-                <div className="sm:hidden relative" ref={overflowRef}>
+                {!showRun && <div className="sm:hidden relative" ref={overflowRef}>
                   <button
                     onClick={() => setShowOverflow(v => !v)}
                     className="flex items-center px-2 py-1.5 text-white/30 hover:text-white transition-all rounded hover:bg-white/[0.04]"
@@ -691,7 +691,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </div>}
               </div>
             </div>
             {/* ─── END TAB BAR ─── */}
