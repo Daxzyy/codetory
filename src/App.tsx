@@ -737,7 +737,6 @@ const overflowRef = useRef<HTMLDivElement>(null);
                   {running && (
                     <div className="flex items-center gap-2.5 text-white/30">
                       <i className="ph-bold ph-terminal-window text-base text-white/20" />
-                      <i className="ph-bold ph-circle-notch animate-spin text-sm" />
                       <span className="text-[11px] font-mono">executing...</span>
                     </div>
                   )}
