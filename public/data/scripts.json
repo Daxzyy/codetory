@@ -438,7 +438,9 @@
     "explanation": "buat deteksi gambar 18+",
     "language": "JavaScript",
     "author": "Givy",
-    "date": "2026-05-22"
+    "date": "2026-05-22",
+    "run": true,
+    "defaultInput": "https://athars.space/uploads/ddb95627.jpg"
   },
   {
     "id": "51",
@@ -447,6 +449,8 @@
     "explanation": "buat ngecek IMEI hp🥰🔥",
     "language": "JavaScript",
     "author": "Givy",
-    "date": "2026-05-22"
+    "date": "2026-05-22",
+    "run": true,
+    "defaultInput": "358180005339211"
   }
 ]
