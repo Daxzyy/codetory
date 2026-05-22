@@ -651,13 +651,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                   >
                     <ExternalLink className="w-3 h-3" /> Raw
                   </a>
-                  <button
-                    onClick={handleCopy}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight rounded hover:bg-white/[0.04]"
-                  >
-                    {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3" />}
-                    {copied ? "Copied" : "Copy"}
-                  </button>
+
                   <button
                     onClick={handleDownload}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 text-white/30 hover:text-white transition-all text-[10px] font-bold tracking-tight rounded hover:bg-white/[0.04]"
@@ -689,11 +683,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
                           className="flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
                           <ExternalLink className="w-3 h-3" /> Raw
                         </a>
-                        <button onClick={() => { handleCopy(); setShowOverflow(false); }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
-                          {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3" />}
-                          {copied ? "Copied" : "Copy"}
-                        </button>
+
                         <button onClick={() => { handleDownload(); setShowOverflow(false); }}
                           className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">
                           <Download className="w-3 h-3" /> Download
@@ -718,7 +708,14 @@ const overflowRef = useRef<HTMLDivElement>(null);
                   ) : isLarge ? (
                     <LargeFileViewer code={code} language={scriptData?.language?.toLowerCase() || "text"} />
                   ) : (
-                    <div className="text-[11px] font-mono overflow-hidden">
+                    <div className="text-[11px] font-mono overflow-hidden relative group/code">
+                      <button
+                        onClick={handleCopy}
+                        className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-white/30 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/25 rounded transition-all opacity-0 group-hover/code:opacity-100"
+                      >
+                        {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                        {copied ? "Copied" : "Copy"}
+                      </button>
                       <SyntaxHighlighter
                         language={scriptData?.language?.toLowerCase() || "javascript"}
                         style={oneDark}
@@ -744,9 +741,18 @@ const overflowRef = useRef<HTMLDivElement>(null);
                     <p className="text-[10px] font-mono text-white/15 select-none">waiting...</p>
                   )}
                   {!running && runOutput !== null && (
-                    <pre className="text-[11px] font-mono text-neutral-300 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-96">
-                      {runOutput}
-                    </pre>
+                    <div className="relative group/output">
+                      <button
+                        onClick={() => { navigator.clipboard.writeText(runOutput!); }}
+                        className="absolute top-0 right-0 z-10 flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-white/30 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/25 rounded transition-all opacity-0 group-hover/output:opacity-100"
+                      >
+                        <Copy className="w-3 h-3" />
+                        Copy
+                      </button>
+                      <pre className="text-[11px] font-mono text-neutral-300 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-96">
+                        {runOutput}
+                      </pre>
+                    </div>
                   )}
                 </motion.div>
               )}
