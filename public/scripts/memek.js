@@ -1,1 +1,0 @@
-kontol asoakkw qkqkwk
