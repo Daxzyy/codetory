@@ -13,6 +13,8 @@
   "dependencies": {
     "@babel/standalone": "^7.27.0",
     "@google/genai": "^1.29.0",
+    "axios": "^1.6.8",
+    "form-data": "^4.0.0",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "react": "^19.0.0",
