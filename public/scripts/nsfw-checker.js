@@ -1,21 +1,43 @@
-const axios = require('axios')
-const FormData = require('form-data')
+const https = require('https')
+
+function fetchBuffer(url) {
+  return new Promise(function(resolve, reject) {
+    https.get(url, function(res) {
+      const chunks = []
+      res.on('data', function(c) { chunks.push(c) })
+      res.on('end', function() { resolve(Buffer.concat(chunks)) })
+    }).on('error', reject)
+  })
+}
+
+function postMultipart(hostname, path, boundary, body) {
+  return new Promise(function(resolve, reject) {
+    const req = https.request({
+      hostname: hostname, path: path, method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data; boundary=' + boundary, 'Content-Length': body.length }
+    }, function(res) {
+      let d = ''
+      res.on('data', function(c) { d += c })
+      res.on('end', function() { try { resolve(JSON.parse(d)) } catch(e) { reject(e) } })
+    })
+    req.on('error', reject)
+    req.write(body)
+    req.end()
+  })
+}
 
 async function nsfwChecker(imageUrl) {
   try {
-    const imgRes = await axios.get(imageUrl, { responseType: 'arraybuffer' })
-    const imgBuffer = Buffer.from(imgRes.data)
-
-    const form = new FormData()
-    form.append('file', imgBuffer, { filename: Date.now() + '.jpg', contentType: 'image/jpeg' })
-
-    const { data } = await axios.post(
-      'https://www.nyckel.com/v1/functions/o2f0jzcdyut2qxhu/invoke',
-      form,
-      { headers: form.getHeaders() }
-    )
-
-    return { success: true, result: data }
+    const imgBuffer = await fetchBuffer(imageUrl)
+    const boundary = '----FormBoundary' + Date.now()
+    const filename = Date.now() + '.jpg'
+    const bodyParts = Buffer.concat([
+      Buffer.from('--' + boundary + '\r\nContent-Disposition: form-data; name="file"; filename="' + filename + '"\r\nContent-Type: image/jpeg\r\n\r\n'),
+      imgBuffer,
+      Buffer.from('\r\n--' + boundary + '--\r\n')
+    ])
+    const result = await postMultipart('www.nyckel.com', '/v1/functions/o2f0jzcdyut2qxhu/invoke', boundary, bodyParts)
+    return { success: true, result: result }
   } catch (err) {
     return { success: false, error: err.message }
   }
