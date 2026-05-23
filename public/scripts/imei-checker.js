@@ -1,37 +1,19 @@
-const https = require('https')
-
-function httpsGet(url) {
-  return new Promise((resolve, reject) => {
-    const opts = new URL(url)
-    https.get({
-      hostname: opts.hostname,
-      path: opts.pathname + opts.search,
-      headers: {
-        'User-Agent': 'okhttp/4.9.2',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Encoding': 'identity'
-      }
-    }, (res) => {
-      let data = ''
-      res.on('data', c => data += c)
-      res.on('end', () => resolve(JSON.parse(data)))
-    }).on('error', reject)
-  })
-}
+const axios = require('axios')
 
 async function imeiCheck(imei) {
   try {
-    const data = await httpsGet(
-      `https://dash.imei.info/api/check/0/?imei=${encodeURIComponent(imei)}&API_KEY=f43f0d0c-27b0-408a-abd0-585fabea6adf`
+    const { data } = await axios.get(
+      'https://dash.imei.info/api/check/0/?imei=' + encodeURIComponent(imei) + '&API_KEY=f43f0d0c-27b0-408a-abd0-585fabea6adf',
+      { headers: { 'User-Agent': 'okhttp/4.9.2', 'Accept': 'application/json' } }
     )
 
-    if (!data?.result?.header) {
+    if (!data || !data.result || !data.result.header) {
       return { success: false, error: 'Invalid response' }
     }
 
     const { header, items } = data.result
-    const toKey = (str) => str.trim().replace(/\s+/g, '_')
-    const formatBool = (val) => {
+    const toKey = function(str) { return str.trim().replace(/\s+/g, '_') }
+    const formatBool = function(val) {
       if (val === 'True') return 'Support'
       if (val === 'False') return 'Not support'
       return val
@@ -65,13 +47,7 @@ async function imeiCheck(imei) {
 
     return {
       success: true,
-      results: {
-        imei: header.imei,
-        brand: header.brand,
-        model: header.model,
-        photo: header.photo,
-        ...result
-      }
+      results: Object.assign({ imei: header.imei, brand: header.brand, model: header.model, photo: header.photo }, result)
     }
   } catch (err) {
     return { success: false, error: err.message }
@@ -79,4 +55,4 @@ async function imeiCheck(imei) {
 }
 
 const input = process.argv[2] || '358180005339211'
-imeiCheck(input).then(r => console.log(JSON.stringify(r, null, 2)))
+imeiCheck(input).then(function(r) { console.log(JSON.stringify(r, null, 2)) })
