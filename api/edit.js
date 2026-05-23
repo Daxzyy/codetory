@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { name, fileName, language, explanation, code, author, password } = req.body;
+  const { name, fileName, language, explanation, code, author, password, run, defaultInput } = req.body;
 
   if (password !== process.env.SUBMIT_PASSWORD) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -40,13 +40,24 @@ export default async function handler(req, res) {
 
     const updatedScripts = currentScripts.map((s) => {
       if (s.fileName !== fileName) return s;
-      return {
+      const updated = {
         ...s,
         ...(name && { name }),
         ...(language && { language }),
         ...(explanation !== undefined && { explanation }),
         ...(author && { author }),
       };
+      if (run === true || run === "true") {
+        updated.run = true;
+      } else {
+        delete updated.run;
+      }
+      if (defaultInput) {
+        updated.defaultInput = defaultInput;
+      } else {
+        delete updated.defaultInput;
+      }
+      return updated;
     });
 
     const updatedScriptsBase64 = Buffer.from(
