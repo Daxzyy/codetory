@@ -875,6 +875,7 @@ function SessionBadge({ onExpire }: { onExpire: () => void }) {
 function Submit() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const passwordRef = useRef("");
   const [showPassword, setShowPassword] = useState(false);
   const [authed, setAuthed] = useState(() => isSessionValid());
   const [authError, setAuthError] = useState(false);
@@ -928,6 +929,7 @@ function Submit() {
     try {
       const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
       if (res.ok) {
+        passwordRef.current = password;
         setSessionExpiry();
         setAuthed(true);
       } else {
@@ -958,7 +960,7 @@ function Submit() {
     setStatus("loading");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, password }) });
+      const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, password: passwordRef.current }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit");
       setStatus("success");
@@ -971,7 +973,7 @@ function Submit() {
     setStatus("loading");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/edit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, password }) });
+      const res = await fetch("/api/edit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, password: passwordRef.current }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to edit");
       setStatus("success");
@@ -982,7 +984,7 @@ function Submit() {
   const handleDelete = async (fileName: string) => {
     setStatus("loading");
     try {
-      const res = await fetch("/api/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileName, password }) });
+      const res = await fetch("/api/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileName, password: passwordRef.current }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete");
       setScripts(s => s.filter(x => x.fileName !== fileName));
@@ -1006,7 +1008,7 @@ function Submit() {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"} value={password}
-                onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleAuth()}
+                onChange={e => { setPassword(e.target.value); passwordRef.current = e.target.value; }} onKeyDown={e => e.key === "Enter" && handleAuth()}
                 placeholder="Enter password..."
                 className="w-full bg-white/5 border border-white/10 px-3 py-2 pr-9 text-sm text-white focus:outline-none focus:border-white/30 transition-all"
               />
