@@ -69,7 +69,9 @@
     "explanation": "Login, ambil metadata, dan download preset Alight Motion.",
     "language": "JavaScript",
     "author": "Givy",
-    "date": "2026-04-18"
+    "date": "2026-04-18",
+    "run": true,
+    "defaultInput": "https://alightcreative.com/am/share/u/PcAXT2rWG6fN7uII1zrw9ld4f9G2/p/ORp2VxLWge-ebec08bb3e641792"
   },
   {
     "id": "9",
