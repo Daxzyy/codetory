@@ -24,7 +24,8 @@
     "explanation": "Cek stok Blox Fruits (normal & mirage).",
     "language": "JavaScript",
     "author": "Givy",
-    "date": "2026-04-18"
+    "date": "2026-04-18",
+    "run": true
   },
   {
     "id": "4",
