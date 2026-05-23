@@ -523,7 +523,7 @@ const overflowRef = useRef<HTMLDivElement>(null);
       let runnableCode = code;
       try {
         runnableCode = Babel.transform(code, {
-          presets: [['env', { targets: { node: '12' } }]],
+          presets: [['env', { targets: { node: '14' } }]],
         }).code ?? code;
       } catch (_) {}
       const submitRes = await fetch('https://ce.judge0.com/submissions?wait=true', {
