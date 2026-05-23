@@ -471,6 +471,8 @@
     "explanation": "untuk mengambil metadata preset/project dan download file preset .alight dari link share Alight Motion menggunakan endpoint internal Firebase & Cloud Functions.",
     "language": "JavaScript",
     "author": "Givy",
-    "date": "2026-05-23"
+    "date": "2026-05-23",
+    "run": true,
+    "defaultInput": "https://alightcreative.com/am/share/u/PcAXT2rWG6fN7uII1zrw9ld4f9G2/p/ORp2VxLWge-ebec08bb3e641792"
   }
 ]
