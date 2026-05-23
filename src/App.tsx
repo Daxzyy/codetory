@@ -883,7 +883,7 @@ function Submit() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [scriptsLoading, setScriptsLoading] = useState(false);
   const [selectedScript, setSelectedScript] = useState<Script | null>(null);
-  const [form, setForm] = useState({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" });
+  const [form, setForm] = useState({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy", run: false, defaultInput: "" });
   const [fileBaseName, setFileBaseName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mirrorRef = useRef<HTMLSpanElement>(null);
@@ -949,7 +949,7 @@ function Submit() {
       .then(res => res.json())
       .then(async ({ d }) => {
         const { code } = await decryptData(d);
-        setForm({ name: script.name, fileName: script.fileName, language: script.language, explanation: script.explanation, code, author: script.author });
+        setForm({ name: script.name, fileName: script.fileName, language: script.language, explanation: script.explanation, code, author: script.author, run: (script as any).run || false, defaultInput: (script as any).defaultInput || "" });
       });
   };
 
@@ -1029,7 +1029,7 @@ function Submit() {
           </div>
 
           <div className="flex items-center border-b border-white/10 mb-6">
-  <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setFileBaseName(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy" }); }}>Add</button>
+  <button className={tabClass("add")} onClick={() => { setTab("add"); setStatus("idle"); setErrorMsg(""); setFileBaseName(""); setForm({ name: "", fileName: "", language: "JavaScript", explanation: "", code: "", author: "Givy", run: false, defaultInput: "" }); }}>Add</button>
   <button className={tabClass("edit")} onClick={() => { setTab("edit"); setStatus("idle"); setErrorMsg(""); setSelectedScript(null); setSearchManage(""); }}>Edit</button>
   <button className={tabClass("delete")} onClick={() => { setTab("delete"); setStatus("idle"); setErrorMsg(""); setSearchManage(""); }}>Delete</button>
   {!scriptsLoading && (
@@ -1100,6 +1100,20 @@ function Submit() {
                 <textarea name="code" value={form.code} onChange={handleChange} placeholder="const x = ..." rows={12}
                   className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none" />
               </div>
+              <div className="flex items-center justify-between px-3 py-2.5 border border-white/10 bg-white/[0.02]">
+                <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Enable "Try" button</span>
+                <button type="button" onClick={() => setForm(f => ({ ...f, run: !f.run }))}
+                  className={`w-8 h-4 rounded-full transition-all relative ${(form as any).run ? "bg-green-500/40 border border-green-500/60" : "bg-white/10 border border-white/20"}`}>
+                  <span className={`absolute top-0.5 w-3 h-3 rounded-full transition-all ${(form as any).run ? "left-4 bg-green-400" : "left-0.5 bg-white/30"}`} />
+                </button>
+              </div>
+              {(form as any).run && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Default Input (stdin)</label>
+                  <input name="defaultInput" value={(form as any).defaultInput || ""} onChange={handleChange} placeholder="https://example.com atau kosongkan"
+                    className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all" />
+                </div>
+              )}
               {status === "error" && <p className="text-red-400 text-xs font-mono">{errorMsg}</p>}
               {status === "success" && <p className="text-green-400 text-xs font-mono">Script berhasil ditambahkan! Redirecting...</p>}
               <button onClick={handleAdd} disabled={status === "loading" || status === "success"}
@@ -1169,6 +1183,20 @@ function Submit() {
                     <textarea name="code" value={form.code} onChange={handleChange} rows={12}
                       className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all resize-none" />
                   </div>
+                  <div className="flex items-center justify-between px-3 py-2.5 border border-white/10 bg-white/[0.02]">
+                    <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Enable "Try" button</span>
+                    <button type="button" onClick={() => setForm(f => ({ ...f, run: !f.run }))}
+                      className={`w-8 h-4 rounded-full transition-all relative ${(form as any).run ? "bg-green-500/40 border border-green-500/60" : "bg-white/10 border border-white/20"}`}>
+                      <span className={`absolute top-0.5 w-3 h-3 rounded-full transition-all ${(form as any).run ? "left-4 bg-green-400" : "left-0.5 bg-white/30"}`} />
+                    </button>
+                  </div>
+                  {(form as any).run && (
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Default Input (stdin)</label>
+                      <input name="defaultInput" value={(form as any).defaultInput || ""} onChange={handleChange} placeholder="https://example.com atau kosongkan"
+                        className="bg-white/5 border border-white/10 px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-white/30 transition-all" />
+                    </div>
+                  )}
                   {status === "error" && <p className="text-red-400 text-xs font-mono">{errorMsg}</p>}
                   {status === "success" && <p className="text-green-400 text-xs font-mono">Script berhasil diupdate! Redirecting...</p>}
                   <button onClick={handleEdit} disabled={status === "loading" || status === "success"}
