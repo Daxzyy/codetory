@@ -875,7 +875,7 @@ function SessionBadge({ onExpire }: { onExpire: () => void }) {
 function Submit() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
-  const passwordRef = useRef("");
+  const passwordRef = useRef(sessionStorage.getItem("codetory_pw") || "");
   const [showPassword, setShowPassword] = useState(false);
   const [authed, setAuthed] = useState(() => isSessionValid());
   const [authError, setAuthError] = useState(false);
@@ -897,6 +897,8 @@ function Submit() {
   const handleExpire = () => {
     setAuthed(false);
     setPassword("");
+    passwordRef.current = "";
+    sessionStorage.removeItem("codetory_pw");
   };
 
   useEffect(() => {
@@ -930,6 +932,7 @@ function Submit() {
       const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
       if (res.ok) {
         passwordRef.current = password;
+        sessionStorage.setItem("codetory_pw", password);
         setSessionExpiry();
         setAuthed(true);
       } else {
