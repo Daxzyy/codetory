@@ -463,5 +463,14 @@
     "date": "2026-05-22",
     "run": true,
     "defaultInput": "ynlvaealuht"
+  },
+  {
+    "id": "53",
+    "name": "Alight Motion",
+    "fileName": "alightmotion.js",
+    "explanation": "untuk mengambil metadata preset/project dan download file preset .alight dari link share Alight Motion menggunakan endpoint internal Firebase & Cloud Functions.",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-05-23"
   }
 ]
