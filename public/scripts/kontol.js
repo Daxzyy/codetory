@@ -1,1 +1,0 @@
-assuuuu jembod
