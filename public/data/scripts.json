@@ -529,5 +529,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-21"
+  },
+  {
+    "id": "60",
+    "name": "threads downloader",
+    "fileName": "threadsdl.js",
+    "explanation": "download",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
