@@ -511,5 +511,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-21"
+  },
+  {
+    "id": "58",
+    "name": "douyin search",
+    "fileName": "dysearch.js",
+    "explanation": "search video douyin",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
