@@ -58,9 +58,9 @@ async function ytdl(url) {
     axios.post(`https://api.ytmp3.tube${endpoint}`, { id: videoId, token, timestamp, secretToken, ...body }, { headers: apiHeaders })
       .then(r => r.data).catch(() => null);
 
-  const pollMp3 = async (bitrate, maxRetry = 10) => {
+  const pollMedia = async (endpoint, payload, maxRetry = 10) => {
     for (let i = 0; i < maxRetry; i++) {
-      const r = await postApi("/api/download/mp3", { audioBitrate: bitrate });
+      const r = await postApi(endpoint, payload);
       if (!r) break;
       if (r.status === "ok" && r.link) return r.link;
       if (r.status === "fail") return null;
@@ -69,34 +69,33 @@ async function ytdl(url) {
     return null;
   };
 
-  const mp4Qualities = ["1080", "720", "480", "360", "240"];
+  const mp4Qualities = ["1080", "720", "480", "360", "240", "144"];
   const mp3Bitrates = ["320", "256", "192", "128", "64"];
 
   const [mp4Results, mp3Results] = await Promise.all([
-    Promise.all(mp4Qualities.map(q => postApi("/api/download/mp4", { videoQuality: q }))),
-    Promise.all(mp3Bitrates.map(b => pollMp3(b))),
+    Promise.all(mp4Qualities.map(q => pollMedia("/api/download/mp4", { videoQuality: q }, 15).then(link => ({ q, link })))),
+    Promise.all(mp3Bitrates.map(b => pollMedia("/api/download/mp3", { audioBitrate: b }, 80).then(link => ({ b, link })))),
   ]);
 
-  const seenMp4 = new Set();
-  const mp4 = mp4Results.map((r, i) => {
-    const link = r?.status === "ok" && r?.link ? r.link : null;
-    if (!link) return null;
-    const itag = link.match(/itag=(\d+)/)?.[1] || "";
-    if (seenMp4.has(itag)) return null;
-    seenMp4.add(itag);
-    return { quality: mp4Qualities[i] + "p", url: link };
-  }).filter(Boolean);
+  const mp4Map = new Map();
+  for (const { q, link } of mp4Results) {
+    if (link) {
+      mp4Map.set(q, { quality: q + "p", url: link });
+    }
+  }
 
-  const seenMp3 = new Set();
-  const mp3 = mp3Results.map((link, i) => {
-    if (!link) return null;
-    const key = link.split("?")[0];
-    if (seenMp3.has(key)) return null;
-    seenMp3.add(key);
-    return { quality: mp3Bitrates[i] + "kbps", url: link };
-  }).filter(Boolean);
+  const mp3Map = new Map();
+  for (const { b, link } of mp3Results) {
+    if (link) {
+      mp3Map.set(b, { quality: b + "kbps", url: link });
+    }
+  }
+
+  const mp4 = Array.from(mp4Map.values());
+  const mp3 = Array.from(mp3Map.values());
 
   return { title, author, thumb, videoId, mp4, mp3 };
 }
 
-return ytdl("https://youtu.be/dQw4w9WgXcQ");
+
+return ytdl("https://youtu.be/oO-IEOvTmRY?si=pGXhhhQ0Aij_I63l")
