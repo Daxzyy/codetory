@@ -502,5 +502,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-21"
+  },
+  {
+    "id": "57",
+    "name": "novaskin mc",
+    "fileName": "novaskin.js",
+    "explanation": "sebelum run harus install module wreq-js",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
