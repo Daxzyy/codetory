@@ -574,5 +574,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-21"
+  },
+  {
+    "id": "65",
+    "name": "Z Image",
+    "fileName": "zimage.js",
+    "explanation": "buat generate image",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
