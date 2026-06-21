@@ -565,5 +565,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-21"
+  },
+  {
+    "id": "64",
+    "name": "zimage hf",
+    "fileName": "zimagehf.js",
+    "explanation": "",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
