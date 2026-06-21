@@ -466,5 +466,14 @@
     "date": "2026-05-22",
     "run": true,
     "defaultInput": "ynlvaealuht"
+  },
+  {
+    "id": "53",
+    "name": "kiryuu komik",
+    "fileName": "kiryuu.js",
+    "explanation": "ambil search sesuai query dan detail,chapter dan latest",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
