@@ -493,5 +493,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-21"
+  },
+  {
+    "id": "56",
+    "name": "Gore Video #3",
+    "fileName": "xgore.js",
+    "explanation": "Buat nonton video gore",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-06-21"
   }
 ]
