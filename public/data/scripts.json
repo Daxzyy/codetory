@@ -610,5 +610,14 @@
     "language": "JavaScript",
     "author": "Givy",
     "date": "2026-06-26"
+  },
+  {
+    "id": "69",
+    "name": "AM Preset Finder",
+    "fileName": "amfinder.js",
+    "explanation": "buat nyari preset dari url vt",
+    "language": "JavaScript",
+    "author": "Givy",
+    "date": "2026-09-28"
   }
 ]
